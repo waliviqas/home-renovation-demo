@@ -1115,9 +1115,12 @@
         a.letters.forEach(function(b,i){
           var a0 = (i/ln)*0.22;
           var t  = ease(seg(p, a0, a0+0.18));
-          b.style.transform = 'translateY(' + ((1-t)*115) + '%) rotateX(' + ((1-t)*-62) + 'deg)';
-          b.style.filter    = 'blur(' + ((1-t)*14).toFixed(1) + 'px)';
-          b.style.opacity   = t;
+          // The letters materialise in place rather than rising from a mask.
+          // A mask reveal would leave the deck's landing view blank until the
+          // visitor scrolls, and this act is the first thing they see.
+          b.style.transform = 'translateY(' + ((1-t)*16) + '%) rotateX(' + ((1-t)*-38) + 'deg)';
+          b.style.filter    = 'blur(' + ((1-t)*12).toFixed(1) + 'px)';
+          b.style.opacity   = mix(0.22, 1, t);
         });
         var gt = ease(seg(p,0.02,0.40));
         a.grid.style.opacity   = gt*0.45;
@@ -1131,7 +1134,7 @@
         a.scan.style.transform = 'translateX(' + mix(-260,760,st) + '%)';
         a.scan.style.opacity   = Math.min(seg(st,0,0.15), 1-seg(st,0.85,1)) * 0.75;
         var bt = ease(seg(p,0.38,0.60));
-        a.sub.style.opacity      = bt*0.9;
+        a.sub.style.opacity      = mix(0.18, 0.9, bt);
         a.sub.style.letterSpacing= mix(0.62,0.42,bt) + 'em';
         // hand off to the hero
         var ex = ease(seg(p,0.76,1));
