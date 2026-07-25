@@ -26,7 +26,7 @@
     --glass-line:rgba(255,255,255,.9);
     --glass-shadow:0 0 0 1px rgba(255,122,36,.14), 0 28px 60px -22px rgba(176,46,0,.45), 0 3px 12px rgba(176,46,0,.08);
     --inset-hi:inset 0 1px 0 rgba(255,255,255,.98), inset 0 -1px 0 rgba(255,140,60,.22);
-    /* live accent — the gallery retunes this per slide */
+    /* live accent: the gallery retunes this per slide */
     --accent:255,106,0;
     /* pointer parallax, set from JS */
     --mx:0; --my:0;
@@ -49,7 +49,7 @@
   }
 
   /* ══════════ act 0 · title card ══════════
-     Same pinned-scroll infrastructure as every other act — the wordmark
+     Same pinned-scroll infrastructure as every other act. The wordmark
      assembles as you scroll through it, it is not a timed intro. */
   #act-title .pin{padding:0;align-items:center;justify-content:center}
   .titleWrap{
@@ -95,7 +95,7 @@
 
   /* ══════════ liquid backdrop ══════════
      Fixed, slowly drifting warm blobs. Everything glassy above it
-     refracts THIS — without it, backdrop-filter has nothing to show. */
+     refracts THIS. Without it, backdrop-filter has nothing to show. */
   .liquid{position:fixed;inset:0;z-index:-3;overflow:hidden;contain:strict;
     background:linear-gradient(165deg,#FFF6EC 0%,var(--paper) 40%,#FFEFE0 100%)}
   .blob{position:absolute;border-radius:50%;filter:blur(60px);will-change:transform}
@@ -122,12 +122,12 @@
   /* ══════════ moving rays of light ══════════
      Netflix runs a looping ambient-light .webm on a FIXED container so it never
      seams between sections. Same idea, done in CSS: one fixed field for the whole
-     page — scroll only modulates it, it is never rebuilt per act. */
+     page. Scroll only modulates it; it is never rebuilt per act. */
   .lightfield{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;
     transform:translate3d(calc(var(--mx) * 20px),calc(var(--my) * 12px),0)}
   /* Curtains of light down the left and right edges, centre left clear so the
      type stays readable. Each curtain is three layers of vertical striations
-     scrolling sideways at different speeds — the interference between the
+     scrolling sideways at different speeds. The interference between the
      layers is what makes it look liquid rather than like moving stripes. */
   .curtain{position:absolute;top:0;bottom:0;width:33vw;overflow:hidden;opacity:.7;contain:strict;
            filter:blur(9px) saturate(155%)}
@@ -139,7 +139,7 @@
             mask-image:linear-gradient(270deg,#000 0%,rgba(0,0,0,.8) 26%,transparent 86%)}
   .curtain span{
     position:absolute;inset:-16% -34%;display:block;overflow:hidden;
-    /* tilt the whole layer, not the gradient — an angled gradient would seam */
+    /* tilt the whole layer, not the gradient; an angled gradient would seam */
     transform:rotate(var(--tilt,-3deg)) scale(1.24);
     -webkit-mask-image:linear-gradient(180deg,transparent,#000 15%,#000 85%,transparent);
             mask-image:linear-gradient(180deg,transparent,#000 15%,#000 85%,transparent);
@@ -181,7 +181,7 @@
       rgba(240,78,0,.42)   40px,
       rgba(255,96,0,.16)   120px,
       rgba(240,78,0,0)     210px)}
-  /* a glint sweeps the curtain every few seconds — real liquid glass catches
+  /* a glint sweeps the curtain every few seconds. Real liquid glass catches
      the light in passes, it doesn't shimmer uniformly */
   .curtain i{
     position:absolute;top:-10%;height:120%;width:26%;pointer-events:none;
@@ -222,7 +222,7 @@
     display:flex;flex-direction:column;justify-content:center;padding:96px 6vw 56px;
   }
 
-  /* ══════════ nav — floating glass pill ══════════ */
+  /* ══════════ nav: floating glass pill ══════════ */
   header{
     position:fixed;top:0;left:0;right:0;z-index:200;
     display:flex;align-items:center;justify-content:space-between;
@@ -280,7 +280,7 @@
   /* outlined */
   .w.hollow > i{color:transparent;-webkit-text-stroke:2px var(--o-500)}
 
-  /* peekaboo slot — opens from zero width and shoulders the words apart */
+  /* peekaboo slot: opens from zero width and shoulders the words apart */
   .peek{
     display:inline-block;overflow:hidden;border-radius:18px;flex:0 0 auto;align-self:center;
     width:0;border:1px solid var(--glass-line);
@@ -344,7 +344,7 @@
 
   /* ══════════ gallery: cards that come at you ══════════
      Netflix's mid-page acts scale a card up toward the viewer while it
-     dissolves into the next one. Neighbours overlap on purpose — drawing only
+     dissolves into the next one. Neighbours overlap on purpose; drawing only
      the current slide leaves a blank frame at every boundary. */
   .gal-frame{position:relative;height:100vh}
   .slide{position:absolute;inset:0;display:grid;place-items:center;
@@ -511,7 +511,7 @@
   <div class="blob b3"></div><div class="blob b4"></div>
 </div>
 <div class="veil" aria-hidden="true"></div>
-<!-- one continuous light field for the whole page — never rebuilt per act -->
+<!-- one continuous light field for the whole page, never rebuilt per act -->
 <div class="lightfield" aria-hidden="true">
   <div class="curtain l"><span class="c1"><u></u></span><span class="c2"><u></u></span><span class="c3"><u></u></span><i></i></div>
   <div class="curtain r"><span class="c1"><u></u></span><span class="c2"><u></u></span><span class="c3"><u></u></span><i></i></div>
@@ -579,7 +579,7 @@
     <p class="hero-sub" data-fade>
       <strong>AI-native home renovation for Bay Area homeowners.</strong>
       Upload your floor plan, describe your dream in plain English, and get feasible,
-      budget-fit renovation routes — before you ever call a contractor.
+      budget-fit renovation routes, before you ever call a contractor.
     </p>
     <div class="scrollcue">Scroll to explore <i>↓</i></div>
   </div>
@@ -599,7 +599,7 @@
     <div class="cards">
       <div class="card glass" data-fade><div class="num">01</div>
         <h3>Nobody knows what's feasible</h3>
-        <p>Is that wall load-bearing? Slab or raised foundation? Homeowners can't answer the questions that decide <strong>everything</strong> — so they guess, or stall.</p>
+        <p>Is that wall load-bearing? Slab or raised foundation? Homeowners can't answer the questions that decide <strong>everything</strong>, so they guess, or stall.</p>
       </div>
       <div class="card glass" data-fade><div class="num">02</div>
         <h3>Quotes are wild guesses</h3>
@@ -644,7 +644,7 @@
           <div class="txt">
             <h2>Step one.<br><em>Search.</em></h2>
             <p>A web-search agent hits <strong>Zillow and Redfin only</strong> with your address.
-            Two structured sources, deliberately — breadth would poison the house profile
+            Two structured sources, deliberately: breadth would poison the house profile
             every later stage depends on.</p>
           </div>
           <div class="vis"><div class="stepbig">1</div>
@@ -660,8 +660,8 @@
           <div class="txt">
             <h2>Step two.<br><em>Profile.</em></h2>
             <p>It infers your actual house: <strong>ranch or two-story, slab or raised
-            foundation, load-bearing walls, square footage, year built</strong> — the facts
-            that decide what can move.</p>
+            foundation, load-bearing walls, square footage, year built</strong>. These are
+            the facts that decide what can move.</p>
           </div>
           <div class="vis"><div class="stepbig">2</div>
             <div class="steplist">
@@ -677,7 +677,7 @@
             <h2>Step three.<br><em>Feasibility.</em></h2>
             <p>A rules engine crosses your prompt against the house profile, your budget,
             and <strong>county permit knowledge</strong>. This is the part that's hard to
-            copy — and it's per-jurisdiction.</p>
+            copy, and it's per-jurisdiction.</p>
           </div>
           <div class="vis"><div class="stepbig">3</div>
             <div class="steplist">
@@ -692,7 +692,7 @@
           <div class="txt">
             <h2>Step four.<br><em>Routes.</em></h2>
             <p>Up to <strong>three renovation routes</strong>, each an isometric visualization
-            with a cost range — and what the work is actually worth when it's done.</p>
+            with a cost range, and what the work is actually worth when it's done.</p>
           </div>
           <div class="vis"><div class="stepbig">4</div>
             <div class="steplist">
@@ -706,18 +706,18 @@
         <div class="zoom">
           <div class="txt">
             <h2>Three routes.<br><em>Real numbers.</em></h2>
-            <p>Every route shows what it costs <strong>and what it's worth</strong> —
+            <p>Every route shows what it costs <strong>and what it's worth</strong>:
             pre-renovation valuation against projected post-renovation valuation,
             straight from comps.</p>
           </div>
           <div class="vis">
-            <div class="route"><h4>Route A — Split the suite</h4>
+            <div class="route"><h4>Route A: Split the suite</h4>
               <div class="meta">2 new baths · non-bearing partition removal<br>
               <b>$118k–$142k</b> · <span class="up">+$210k est. value</span> · permits ✓</div></div>
-            <div class="route"><h4>Route B — Bath + junior suite</h4>
+            <div class="route"><h4>Route B: Bath + junior suite</h4>
               <div class="meta">1 new bath · master reconfigured, wall retained<br>
               <b>$86k–$104k</b> · <span class="up">+$155k est. value</span> · over-the-counter</div></div>
-            <div class="route"><h4>Route C — Full reconfigure</h4>
+            <div class="route"><h4>Route C: Full reconfigure</h4>
               <div class="meta">2 baths · load-bearing beam work · slab trenching<br>
               <b>$168k–$205k</b> · <span class="up">+$260k est. value</span> · ⚠ over budget</div></div>
           </div>
@@ -735,11 +735,11 @@
     <div class="eyebrow" data-fade>Why here, why now</div>
     <div class="mission" data-mission>
       We turn a floor plan and one sentence into
-      <em>three routes you can actually build</em>
-      — starting with the county where a bad renovation decision costs the most.
+      <em>three routes you can actually build.</em>
+      We start with the county where a bad renovation decision costs the most.
     </div>
     <div class="stats">
-      <div class="stat glass" data-fade><div class="big">$1.4M</div><div class="lb">Median Bay Area home value — every decision is high-stakes</div></div>
+      <div class="stat glass" data-fade><div class="big">$1.4M</div><div class="lb">Median Bay Area home value. Every decision is high-stakes</div></div>
       <div class="stat glass" data-fade><div class="big">2–3×</div><div class="lb">Spread between contractor bids for the same job</div></div>
       <div class="stat glass" data-fade><div class="big">1</div><div class="lb">County at launch. Nail it, then expand across the Bay</div></div>
     </div>
@@ -937,7 +937,7 @@
       }
 
       // peekaboo: opens from zero width, shouldering the words apart, and
-      // lights up as it opens — Netflix grows theirs from width:0 the same way
+      // lights up as it opens. Netflix grows theirs from width:0 the same way
       a.peeks.forEach(function(pk){
         var t  = ease(seg(p, 0.10, 0.62));
         var W  = clamp(vw*0.13, 90, 240);
@@ -968,7 +968,7 @@
       }
 
       // gallery: each card scales up toward the viewer and dissolves into the
-      // next. Neighbours overlap deliberately — drawing only the current slide
+      // next. Neighbours overlap deliberately; drawing only the current slide
       // leaves a blank frame at every boundary.
       if(a.slides.length){
         var sn  = a.slides.length;
