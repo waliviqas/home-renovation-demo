@@ -459,6 +459,43 @@
   .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;
     clip-path:inset(50%);white-space:nowrap}
 
+
+  /* ══════════ xtrace: the compounding layer ══════════ */
+  .xt{display:flex;align-items:center;gap:4vw;margin-top:38px}
+  .xtCopy{flex:1 1 42%;opacity:0}
+  .xtCopy p{color:var(--ink-mid);font-size:clamp(14px,1.2vw,17px);line-height:1.68;margin-bottom:14px}
+  .xtCopy p strong{color:var(--ink);font-weight:600}
+  .xtCopy .tag{display:inline-block;font-family:'Outfit',sans-serif;font-weight:700;
+    font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--o-700);
+    background:rgba(255,106,0,.1);padding:5px 12px;border-radius:999px;margin-bottom:14px}
+  .xtChart{flex:1 1 58%;padding:26px 26px 20px;border-radius:20px}
+  .xtChart svg{display:block;width:100%;height:auto}
+  .xtRead{display:flex;gap:26px;margin-top:16px;flex-wrap:wrap}
+  .xtRead div{flex:1 1 130px}
+  .xtRead .k{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-soft);margin-bottom:4px}
+  .xtRead .v{font-family:'Outfit',sans-serif;font-weight:800;font-size:clamp(20px,2vw,30px);
+    letter-spacing:-.03em;
+    background:linear-gradient(150deg,var(--o-300),var(--o-700) 55%,var(--o-900));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .xtAxis{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-soft);display:flex;justify-content:space-between;margin-top:6px}
+
+  /* ══════════ market sizing ══════════ */
+  .mkt{display:flex;align-items:stretch;gap:16px;margin-top:40px}
+  .mkt .tier{flex:1 1 0;padding:26px 24px;border-radius:20px;opacity:0;position:relative}
+  .mkt .lab{font-family:'Outfit',sans-serif;font-weight:800;font-size:12px;
+    letter-spacing:.16em;color:var(--o-700);margin-bottom:10px}
+  .mkt .fig{font-family:'Outfit',sans-serif;font-weight:800;line-height:1;
+    font-size:clamp(30px,4vw,58px);letter-spacing:-.04em;
+    background:linear-gradient(150deg,var(--o-300),var(--o-700) 55%,var(--o-900));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .mkt .who{margin-top:12px;font-size:13.5px;line-height:1.6;color:var(--ink-mid)}
+  .mkt .who strong{color:var(--ink);font-weight:600}
+  /* the tiers narrow as they get more specific, so the funnel is visible */
+  .mkt .t1{flex-grow:1.35}
+  .mkt .t3{background:linear-gradient(150deg,rgba(255,255,255,.82),rgba(255,224,196,.66))}
+
   /* ══════════ mission word-by-word ══════════ */
   .mission{
     font-family:'Outfit',sans-serif;font-weight:800;
@@ -493,6 +530,20 @@
   }
   .stat .lb{margin-top:10px;font-size:12px;font-weight:500;text-transform:uppercase;
     letter-spacing:.1em;color:var(--ink-mid);max-width:230px;line-height:1.55;position:relative;z-index:1}
+
+  /* ══════════ team ══════════ */
+  .team{margin-top:34px;opacity:0}
+  .teamLab{font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink-soft);margin-bottom:12px}
+  .teamRow{display:flex;flex-wrap:wrap;gap:10px}
+  .teamRow span{
+    font-family:'Outfit',sans-serif;font-weight:700;font-size:clamp(15px,1.5vw,20px);
+    letter-spacing:-.01em;color:var(--ink);padding:11px 22px;border-radius:999px;
+    background:var(--glass);border:1px solid var(--glass-line);
+    box-shadow:var(--glass-shadow),var(--inset-hi);
+    backdrop-filter:blur(14px) saturate(180%);
+    -webkit-backdrop-filter:blur(14px) saturate(180%);
+  }
 
   /* ══════════ closing ══════════ */
   .contact{margin-top:28px;font-size:15px;color:var(--ink-mid);opacity:0;will-change:opacity}
@@ -545,6 +596,8 @@
   <nav>
     <a href="#act-problem">Problem</a>
     <a href="#act-gallery">Product</a>
+    <a href="#act-xtrace">Network</a>
+    <a href="#act-market">Market</a>
     <a href="#act-mission">Why&nbsp;now</a>
     <a href="#act-close">Contact</a>
   </nav>
@@ -782,6 +835,94 @@
   </div>
 </section>
 
+<!-- ═══════ ACT 5 · XTRACE / COMPOUNDING (5 viewports pinned) ═══════ -->
+<section class="act" id="act-xtrace" style="height:500vh">
+  <div class="pin">
+    <div class="eyebrow" data-fade>The compounding layer</div>
+    <div class="line act-type">
+      <span class="w"><i>Every</i></span>
+      <span class="w"><i>home</i></span>
+      <span class="w hot"><i>sharpens</i></span>
+      <span class="w hot"><i>the</i></span>
+      <span class="w hot"><i>next</i></span>
+    </div>
+    <div class="xt">
+      <div class="xtCopy" data-fade>
+        <span class="tag">Powered by Xtrace</span>
+        <p>We build a <strong>custom profile for every home</strong> that runs through
+        the product: its structure, what was proposed, what it was quoted, and what it
+        actually cost to build.</p>
+        <p>Those profiles pool by <strong>zip code</strong>. Every homeowner in an area
+        is effectively sharing one context window, so each new project makes the local
+        cost model sharper for everyone who comes next.</p>
+        <p>The first estimate in a zip code is a ballpark. The
+        <strong>five hundredth is a number you can plan around.</strong></p>
+      </div>
+      <div class="xtChart glass">
+        <svg viewBox="0 0 540 210" aria-hidden="true">
+          <defs>
+            <linearGradient id="xtBand" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#FF9A3D" stop-opacity=".38"/>
+              <stop offset="1" stop-color="#F04E00" stop-opacity=".55"/>
+            </linearGradient>
+            <clipPath id="xtClip"><rect x="0" y="0" width="0" height="210" data-xtclip/></clipPath>
+          </defs>
+          <g clip-path="url(#xtClip)">
+            <!-- the confidence band, wide at first and converging as homes accumulate -->
+            <path d="M30 24 C 170 60, 320 88, 512 100 L512 128 C 320 140, 170 158, 30 186 Z"
+                  fill="url(#xtBand)"/>
+            <path d="M30 105 C 170 108, 320 112, 512 114"
+                  fill="none" stroke="var(--o-700)" stroke-width="2.5" stroke-linecap="round"/>
+          </g>
+          <line x1="30" y1="196" x2="512" y2="196" stroke="rgba(26,20,17,.16)" stroke-width="1.5"/>
+          <circle r="6" fill="var(--o-700)" data-xtdot cx="30" cy="105"/>
+        </svg>
+        <div class="xtAxis"><span>First home in the zip</span><span>500th home</span></div>
+        <div class="xtRead">
+          <div><div class="k">Homes profiled</div><div class="v" data-xtn>0</div></div>
+          <div><div class="k">Estimate spread</div><div class="v" data-xtci>&plusmn;$0k</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ ACT 6 · MARKET (4 viewports pinned) ═══════ -->
+<section class="act" id="act-market" style="height:400vh">
+  <div class="pin">
+    <div class="eyebrow" data-fade>Market</div>
+    <div class="line act-type">
+      <span class="w"><i>A</i></span>
+      <span class="w"><i>wedge</i></span>
+      <span class="w"><i>into</i></span>
+      <span class="w hot"><i>a</i></span>
+      <span class="w hot"><i>$400B</i></span>
+      <span class="w hot"><i>market</i></span>
+    </div>
+    <div class="mkt">
+      <div class="tier glass t1" data-fade>
+        <div class="lab">TAM</div>
+        <div class="fig">$400B+</div>
+        <div class="who">US <strong>home improvement</strong> spend, the whole
+        category we eventually play in.</div>
+      </div>
+      <div class="tier glass t2" data-fade>
+        <div class="lab">SAM</div>
+        <div class="fig">1.6M homes</div>
+        <div class="who">Bay Area <strong>owner-occupied homes</strong>, every one of
+        them a household that can actually commission the work.</div>
+      </div>
+      <div class="tier glass t3" data-fade>
+        <div class="lab">SOM</div>
+        <div class="fig">$9B+</div>
+        <div class="who">Bay Area renovation and remodeling projects in the
+        <strong>$20k&ndash;$250k</strong> band, which is the range this product is
+        built to price.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══════ ACT 4 · MISSION word-by-word (5 viewports pinned) ═══════ -->
 <section class="act" id="act-mission" style="height:500vh">
   <div class="pin">
@@ -837,7 +978,13 @@
       no-API-key fallback so <strong>it always demos.</strong>
     </p>
     <a class="cta" data-fade href="mailto:wali@viqas.com">Get in touch</a>
-    <div class="contact" data-fade>Wali Viqas · <a href="mailto:wali@viqas.com">wali@viqas.com</a></div>
+    <div class="team" data-fade>
+      <div class="teamLab">Team</div>
+      <div class="teamRow">
+        <span>Rameez</span><span>Soham</span><span>Prakhar</span><span>Wali</span>
+      </div>
+    </div>
+    <div class="contact" data-fade><a href="mailto:wali@viqas.com">wali@viqas.com</a></div>
   </div>
 </section>
 
@@ -908,6 +1055,10 @@
       slides:  [].slice.call(el.querySelectorAll('[data-slide]')),
       mwords:  [].slice.call(el.querySelectorAll('[data-mission] span')),
       title:   el.querySelector('[data-title]'),
+      xtclip:  el.querySelector('[data-xtclip]'),
+      xtdot:   el.querySelector('[data-xtdot]'),
+      xtn:     el.querySelector('[data-xtn]'),
+      xtci:    el.querySelector('[data-xtci]'),
       letters: [].slice.call(el.querySelectorAll('.introMark .lw > b')),
       grid:    el.querySelector('[data-grid]'),
       rings:   [].slice.call(el.querySelectorAll('[data-ring]')),
@@ -986,6 +1137,17 @@
         var ex = ease(seg(p,0.76,1));
         a.title.style.transform = 'scale(' + mix(1,1.09,ex) + ')';
         a.title.style.opacity   = 1-ex;
+      }
+
+      // xtrace: the confidence band draws in and narrows as homes accumulate
+      if(a.xtclip){
+        var xt = ease(seg(p, 0.26, 0.92));
+        a.xtclip.setAttribute('width', (540*xt).toFixed(1));
+        a.xtdot.setAttribute('cx', mix(30,512,xt).toFixed(1));
+        a.xtdot.setAttribute('cy', mix(105,114,xt).toFixed(1));
+        a.xtdot.setAttribute('opacity', xt > 0.02 ? 1 : 0);
+        a.xtn.textContent  = Math.round(mix(1,500,xt)).toLocaleString();
+        a.xtci.textContent = '\u00b1$' + Math.round(mix(62,9,xt)) + 'k';
       }
 
       // headline words: mask-reveal, staggered across the first third of the act
