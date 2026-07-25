@@ -433,11 +433,28 @@
   .route h4{font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;margin-bottom:5px;letter-spacing:-.01em}
   .route .meta{font-size:13px;color:var(--ink-mid);line-height:1.65}
   .route .meta b{color:var(--ink);font-weight:600}
+  .route .meta i{font-style:normal;font-size:10px;font-weight:600;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--o-700);background:rgba(255,106,0,.1);
+    padding:2px 6px;border-radius:5px;vertical-align:1px}
   .route .up{color:var(--good);font-weight:600}
   .route::before{
     content:"";position:absolute;left:0;top:16%;bottom:16%;width:4px;border-radius:0 4px 4px 0;
     background:linear-gradient(180deg,var(--o-300),var(--o-700));
   }
+
+  /* before / after floor plate */
+  .ba{display:flex;align-items:center;gap:2%}
+  .baCell{flex:1 1 44%;position:relative;padding:18px 12px 12px;border-radius:16px;
+    background:rgba(255,255,255,.5);border:1px solid var(--glass-line);box-shadow:var(--inset-hi)}
+  .baCell.on{background:linear-gradient(150deg,rgba(255,255,255,.7),rgba(255,224,196,.6));
+    box-shadow:var(--inset-hi),0 18px 40px -22px rgba(240,78,0,.6)}
+  .baTag{position:absolute;top:10px;left:12px;font-size:10px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+  .baTag.on{color:var(--o-700)}
+  .baTag b{background:var(--o-500);color:#fff;border-radius:4px;padding:1px 5px;
+    margin-left:4px;font-size:9px;letter-spacing:.08em}
+  .baArrow{flex:0 0 auto;font-size:22px;color:var(--o-500);font-weight:700}
+  .baNote{margin-top:16px;font-size:13px;font-style:italic;color:var(--ink-soft)}
 
   /* ══════════ mission word-by-word ══════════ */
   .mission{
@@ -598,23 +615,29 @@
     </div>
     <div class="cards">
       <div class="card glass" data-fade><div class="num">01</div>
-        <h3>Nobody knows what's feasible</h3>
-        <p>Is that wall load-bearing? Slab or raised foundation? Homeowners can't answer the questions that decide <strong>everything</strong>, so they guess, or stall.</p>
+        <h3>Is the project even allowed?</h3>
+        <p>Nobody knows what is feasible on their own house. Does this renovation
+        comply with <strong>county code</strong>? Homeowners can't answer the one
+        question that decides everything, so they guess, or they stall.</p>
       </div>
       <div class="card glass" data-fade><div class="num">02</div>
-        <h3>Quotes are wild guesses</h3>
-        <p>Contractor bids for the same job swing <strong>2–3×</strong>. With no independent feasibility baseline, homeowners negotiate blind.</p>
+        <h3>Is the quote a real number?</h3>
+        <p>Will <strong>$10,000</strong> actually buy the two-bedroom addition you
+        want? With no independent cost model, a homeowner cannot tell a fair bid
+        from a fantasy, and bids for the same job swing <strong>2–3×</strong>.</p>
       </div>
       <div class="card glass" data-fade><div class="num">03</div>
-        <h3>Permits are county chaos</h3>
-        <p>Every Bay Area county plays by different rules. A weekend project in one city is a <strong>6-month permit saga</strong> in the next.</p>
+        <h3>You can't see it until it's built</h3>
+        <p>A floor plan is abstract and renderings cost money. Homeowners commit
+        <strong>six figures</strong> without ever seeing what the house actually
+        becomes.</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ═══════ ACT 3 · GALLERY (9 viewports pinned, 6 slides that come at you) ═══════ -->
-<section class="act" id="act-gallery" style="height:900vh">
+<section class="act" id="act-gallery" style="height:1050vh">
   <div class="pin" style="padding:0">
     <div class="gal-frame" id="gal">
 
@@ -691,8 +714,9 @@
         <div class="zoom">
           <div class="txt">
             <h2>Step four.<br><em>Routes.</em></h2>
-            <p>Up to <strong>three renovation routes</strong>, each an isometric visualization
-            with a cost range, and what the work is actually worth when it's done.</p>
+            <p>Up to <strong>three renovation routes</strong>. Each one carries a
+            realistic cost as a <strong>95% confidence interval</strong>, what the work
+            is worth when it's done, and a 3D view of the house after it's built.</p>
           </div>
           <div class="vis"><div class="stepbig">4</div>
             <div class="steplist">
@@ -706,25 +730,74 @@
         <div class="zoom">
           <div class="txt">
             <h2>Three routes.<br><em>Real numbers.</em></h2>
-            <p>Every route shows what it costs <strong>and what it's worth</strong>:
+            <p>Not a quote, a <strong>95% confidence interval</strong>. Every route
+            shows the realistic cost band and what it's worth when it's done:
             pre-renovation valuation against projected post-renovation valuation,
             straight from comps.</p>
           </div>
           <div class="vis">
             <div class="route"><h4>Route A: Split the suite</h4>
               <div class="meta">2 new baths · non-bearing partition removal<br>
-              <b>$118k–$142k</b> · <span class="up">+$210k est. value</span> · permits ✓</div></div>
+              <b>$118k–$142k</b> <i>95% CI</i> · <span class="up">+$210k est. value</span> · code ✓</div></div>
             <div class="route"><h4>Route B: Bath + junior suite</h4>
               <div class="meta">1 new bath · master reconfigured, wall retained<br>
-              <b>$86k–$104k</b> · <span class="up">+$155k est. value</span> · over-the-counter</div></div>
+              <b>$86k–$104k</b> <i>95% CI</i> · <span class="up">+$155k est. value</span> · over-the-counter</div></div>
             <div class="route"><h4>Route C: Full reconfigure</h4>
               <div class="meta">2 baths · load-bearing beam work · slab trenching<br>
-              <b>$168k–$205k</b> · <span class="up">+$260k est. value</span> · ⚠ over budget</div></div>
+              <b>$168k–$205k</b> <i>95% CI</i> · <span class="up">+$260k est. value</span> · ⚠ over budget</div></div>
           </div>
         </div>
       </div>
 
-      <div class="gal-count"><b id="galNow">1</b> / 6</div>
+      <div class="slide" data-slide data-accent="255,140,40">
+        <div class="zoom">
+          <div class="txt">
+            <h2>See it.<br><em>Before you build it.</em></h2>
+            <p>Describe the addition in plain English and the floor plan redraws
+            itself. A <strong>3D, 360° layer</strong> shows what the house becomes,
+            at a high level, before a single permit is filed.</p>
+          </div>
+          <div class="vis">
+            <div class="ba">
+              <div class="baCell">
+                <span class="baTag">Before</span>
+                <svg viewBox="0 0 200 150" width="100%" aria-hidden="true">
+                  <g fill="none" stroke="rgba(26,20,17,.32)" stroke-width="2.4" stroke-linejoin="round">
+                    <path d="M28 96 L100 58 L172 96 L100 134 Z"/>
+                    <path d="M28 96 L28 74 L100 36 L172 74 L172 96"/>
+                    <path d="M100 58 L100 36"/>
+                    <path d="M64 77 L136 115" stroke-dasharray="5 5"/>
+                  </g>
+                </svg>
+              </div>
+              <div class="baArrow">→</div>
+              <div class="baCell on">
+                <span class="baTag on">After <b>360°</b></span>
+                <svg viewBox="0 0 200 150" width="100%" aria-hidden="true">
+                  <defs><linearGradient id="ba1" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#FF9A3D"/><stop offset="1" stop-color="#F04E00"/>
+                  </linearGradient></defs>
+                  <g fill="none" stroke="rgba(26,20,17,.32)" stroke-width="2.4" stroke-linejoin="round">
+                    <path d="M28 96 L100 58 L172 96 L100 134 Z"/>
+                    <path d="M28 96 L28 74 L100 36 L172 74 L172 96"/>
+                    <path d="M100 58 L100 36"/>
+                  </g>
+                  <g fill="url(#ba1)" opacity=".9">
+                    <path d="M100 58 L154 88 L100 118 L46 88 Z" opacity=".28"/>
+                  </g>
+                  <g fill="none" stroke="url(#ba1)" stroke-width="3.2" stroke-linejoin="round">
+                    <path d="M100 58 L154 88 L100 118 L46 88 Z"/>
+                    <path d="M46 88 L46 66 L100 36" opacity=".75"/>
+                  </g>
+                </svg>
+              </div>
+            </div>
+            <p class="baNote">"Add two bathrooms and break down the master suite."</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="gal-count"><b id="galNow">1</b> / 7</div>
     </div>
   </div>
 </section>
