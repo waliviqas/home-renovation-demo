@@ -85,7 +85,7 @@
     position:absolute;top:-40%;height:180%;width:30%;pointer-events:none;
     background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.95) 45%,
                                      rgba(255,190,110,.7) 62%,rgba(255,255,255,0));
-    filter:blur(24px);opacity:0;mix-blend-mode:overlay;
+    filter:blur(24px);opacity:0;mix-blend-mode:overlay;will-change:transform;
   }
   .introSub{
     margin-top:4vmin;white-space:nowrap;
@@ -96,9 +96,9 @@
   /* ══════════ liquid backdrop ══════════
      Fixed, slowly drifting warm blobs. Everything glassy above it
      refracts THIS — without it, backdrop-filter has nothing to show. */
-  .liquid{position:fixed;inset:0;z-index:-3;overflow:hidden;
+  .liquid{position:fixed;inset:0;z-index:-3;overflow:hidden;contain:strict;
     background:linear-gradient(165deg,#FFF6EC 0%,var(--paper) 40%,#FFEFE0 100%)}
-  .blob{position:absolute;border-radius:50%;filter:blur(60px)}
+  .blob{position:absolute;border-radius:50%;filter:blur(60px);will-change:transform}
   .b1{width:62vw;height:62vw;left:-14vw;top:-18vw;
       background:radial-gradient(circle at 40% 40%,rgba(var(--accent),.8),rgba(255,106,0,0) 62%);
       animation:drift1 26s ease-in-out infinite alternate}
@@ -129,7 +129,7 @@
      type stays readable. Each curtain is three layers of vertical striations
      scrolling sideways at different speeds — the interference between the
      layers is what makes it look liquid rather than like moving stripes. */
-  .curtain{position:absolute;top:0;bottom:0;width:33vw;overflow:hidden;opacity:.7;
+  .curtain{position:absolute;top:0;bottom:0;width:33vw;overflow:hidden;opacity:.7;contain:strict;
            filter:blur(9px) saturate(155%)}
   .curtain.l{left:0;
     -webkit-mask-image:linear-gradient(90deg,#000 0%,rgba(0,0,0,.8) 26%,transparent 86%);
@@ -138,22 +138,29 @@
     -webkit-mask-image:linear-gradient(270deg,#000 0%,rgba(0,0,0,.8) 26%,transparent 86%);
             mask-image:linear-gradient(270deg,#000 0%,rgba(0,0,0,.8) 26%,transparent 86%)}
   .curtain span{
-    position:absolute;inset:-16% -34%;display:block;
-    background-repeat:repeat;
-    background-size:var(--tile) 100%;
+    position:absolute;inset:-16% -34%;display:block;overflow:hidden;
     /* tilt the whole layer, not the gradient — an angled gradient would seam */
     transform:rotate(var(--tilt,-3deg)) scale(1.24);
     -webkit-mask-image:linear-gradient(180deg,transparent,#000 15%,#000 85%,transparent);
             mask-image:linear-gradient(180deg,transparent,#000 15%,#000 85%,transparent);
-    animation:flowX var(--sp) linear infinite,
-              breathe var(--bp) ease-in-out infinite alternate;
+    animation:breathe var(--bp) ease-in-out infinite alternate;
+  }
+  /* the moving part is its own layer: transform is composited on the GPU, where
+     animating background-position would repaint the blurred layer every frame */
+  .curtain span > u{
+    position:absolute;top:0;bottom:0;left:0;display:block;
+    width:calc(100% + var(--tile));
+    background-repeat:repeat;
+    background-size:var(--tile) 100%;
+    animation:flowX var(--sp) linear infinite;
+    will-change:transform;
   }
   /* translating by exactly one tile makes the loop seamless */
-  @keyframes flowX{to{background-position:var(--tile) 0}}
+  @keyframes flowX{to{transform:translate3d(calc(var(--tile) * -1),0,0)}}
   @keyframes breathe{to{opacity:var(--o2);transform:rotate(var(--tilt,-3deg)) scale(1.34) translateY(var(--dy,-4%))}}
 
-  .c1{--tile:250px;--sp:4s;--bp:3.4s;--o2:.45;--dy:-5%;opacity:.95;
-    background-image:repeating-linear-gradient(90deg,
+  .c1{--tile:250px;--sp:4s;--bp:3.4s;--o2:.45;--dy:-5%;opacity:.95;}
+  .c1 > u{background-image:repeating-linear-gradient(90deg,
       rgba(255,106,0,0)    0px,
       rgba(255,106,0,.5)   16px,
       rgba(255,160,50,.2)  38px,
@@ -161,15 +168,15 @@
       rgba(255,120,10,.34) 60px,
       rgba(255,106,0,0)    96px)}
   .c2{--tile:163px;--sp:2.6s;--bp:2.3s;--o2:.8;--dy:4%;opacity:.5;--tilt:2.5deg;
-    animation-direction:reverse,alternate;
-    background-image:repeating-linear-gradient(90deg,
+    animation-direction:alternate-reverse;}
+  .c2 > u{animation-direction:reverse;background-image:repeating-linear-gradient(90deg,
       rgba(255,190,90,0)   0px,
       rgba(255,190,90,.42) 12px,
       rgba(255,255,255,.7) 22px,
       rgba(255,150,40,.26) 40px,
       rgba(255,190,90,0)   72px)}
-  .c3{--tile:430px;--sp:6.2s;--bp:4.8s;--o2:.35;--dy:-7%;opacity:.75;--tilt:-6deg;
-    background-image:repeating-linear-gradient(90deg,
+  .c3{--tile:430px;--sp:6.2s;--bp:4.8s;--o2:.35;--dy:-7%;opacity:.75;--tilt:-6deg;}
+  .c3 > u{background-image:repeating-linear-gradient(90deg,
       rgba(240,78,0,0)     0px,
       rgba(240,78,0,.42)   40px,
       rgba(255,96,0,.16)   120px,
@@ -196,6 +203,16 @@
     background:
       radial-gradient(42% 46% at var(--hx,70%) var(--hy,46%),rgba(var(--accent),.42),rgba(255,138,38,0) 72%),
       radial-gradient(58% 40% at 26% var(--hy2,80%),rgba(255,190,100,.44),rgba(255,190,100,0) 72%);
+  }
+
+  /* Blur cost scales with pixels, so a fullscreen 4K window pays several times
+     what a laptop does for the same design. Ease off above 1600px. */
+  @media (min-width:1600px){
+    .curtain{filter:blur(7px) saturate(155%)}
+    .blob{filter:blur(48px)}
+    .glass{backdrop-filter:blur(10px) saturate(170%);
+           -webkit-backdrop-filter:blur(10px) saturate(170%)}
+    .curtain i{filter:blur(11px)}
   }
 
   /* ══════════ pinned-scroll scaffold ══════════ */
@@ -302,8 +319,8 @@
   .glass{
     position:relative;overflow:hidden;
     background:var(--glass);
-    backdrop-filter:blur(22px) saturate(185%);
-    -webkit-backdrop-filter:blur(22px) saturate(185%);
+    backdrop-filter:blur(14px) saturate(180%);
+    -webkit-backdrop-filter:blur(14px) saturate(180%);
     border:1px solid var(--glass-line);
     border-radius:22px;
     box-shadow:var(--glass-shadow),var(--inset-hi);
@@ -336,9 +353,7 @@
     position:relative;width:86vw;max-width:1380px;height:74vh;
     display:flex;align-items:center;gap:4vw;padding:5vh 4.5vw;
     border-radius:34px;overflow:hidden;transform-origin:50% 52%;
-    background:var(--glass);
-    backdrop-filter:blur(26px) saturate(190%);
-    -webkit-backdrop-filter:blur(26px) saturate(190%);
+    background:linear-gradient(150deg,rgba(255,255,255,.88) 0%,rgba(255,236,216,.72) 100%);
     border:1px solid var(--glass-line);
     box-shadow:0 0 0 1px rgba(255,122,36,.16), 0 60px 120px -50px rgba(var(--accent),.75), var(--inset-hi);
     will-change:transform;
@@ -498,8 +513,8 @@
 <div class="veil" aria-hidden="true"></div>
 <!-- one continuous light field for the whole page — never rebuilt per act -->
 <div class="lightfield" aria-hidden="true">
-  <div class="curtain l"><span class="c1"></span><span class="c2"></span><span class="c3"></span><i></i></div>
-  <div class="curtain r"><span class="c1"></span><span class="c2"></span><span class="c3"></span><i></i></div>
+  <div class="curtain l"><span class="c1"><u></u></span><span class="c2"><u></u></span><span class="c3"><u></u></span><i></i></div>
+  <div class="curtain r"><span class="c1"><u></u></span><span class="c2"><u></u></span><span class="c3"><u></u></span><i></i></div>
   <div class="halo" data-halo></div>
 </div>
 
@@ -971,7 +986,6 @@
           var z  = s.firstElementChild;
           z.style.transform   = 'scale(' + mix(0.80,1.14,t) + ') translateZ(0)';
           z.style.borderRadius= mix(40,8,t) + 'px';
-          z.style.filter      = 'blur(' + ((1-o)*5).toFixed(2) + 'px)';
         });
         if(galNow) galNow.textContent = idx+1;
         // retune the page's accent to the slide in front
