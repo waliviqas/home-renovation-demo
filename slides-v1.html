@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architect in Your Pocket — Pitch Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Archivo+Black&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #E50914;
+    --black: #000;
+    --dark: #0b0b0b;
+    --card: #141414;
+    --gray: #b3b3b3;
+    --white: #fff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ---------- slide shell ---------- */
+  section.slide {
+    min-height: 100vh;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5vw 7vw 8vh;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ---------- top nav ---------- */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 3vw;
+    z-index: 100;
+    background: linear-gradient(to bottom, rgba(0,0,0,.9), transparent);
+  }
+  .brand {
+    font-family: 'Archivo Black', sans-serif;
+    color: var(--red);
+    font-size: 22px;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+  }
+  .brand span { color: var(--white); }
+  header nav a {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-left: 28px;
+    opacity: .75;
+    transition: opacity .2s;
+  }
+  header nav a:hover { opacity: 1; border-bottom: 2px solid var(--red); }
+
+  /* ---------- giant stacked type ---------- */
+  .stack {
+    font-family: 'Archivo Black', 'Archivo', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    line-height: .85;
+    letter-spacing: -0.02em;
+    font-size: clamp(46px, 9.5vw, 132px);
+  }
+  .stack .line { display: block; }
+  .stack .red { color: var(--red); }
+  .stack .outline {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--white);
+  }
+
+  .eyebrow {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 28px;
+  }
+  .lede {
+    font-size: clamp(17px, 1.6vw, 22px);
+    line-height: 1.55;
+    color: var(--gray);
+    max-width: 640px;
+    margin-top: 28px;
+  }
+  .lede strong { color: var(--white); }
+
+  .btn {
+    display: inline-block;
+    background: var(--red);
+    color: var(--white);
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 18px 42px;
+    text-decoration: none;
+    margin-top: 34px;
+    align-self: flex-start;
+    transition: transform .15s, background .2s;
+  }
+  .btn:hover { background: #f6121d; transform: scale(1.04); }
+
+  /* ---------- marquee ticker ---------- */
+  .ticker {
+    scroll-snap-align: none;
+    background: var(--black);
+    border-top: 1px solid #222;
+    border-bottom: 1px solid #222;
+    overflow: hidden;
+    padding: 22px 0;
+    white-space: nowrap;
+  }
+  .ticker-track {
+    display: inline-block;
+    animation: marquee 22s linear infinite;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 28px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .ticker-track em {
+    font-style: normal;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--red);
+    margin: 0 18px;
+  }
+  .ticker-track b { color: var(--white); margin: 0 18px; font-weight: 900; }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ---------- cards ---------- */
+  .grid {
+    display: grid;
+    gap: 22px;
+    margin-top: 52px;
+  }
+  .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+  .card {
+    background: var(--card);
+    padding: 34px 30px;
+    border-radius: 10px;
+    border: 1px solid #1f1f1f;
+    transition: transform .2s, border-color .2s;
+  }
+  .card:hover { transform: translateY(-6px); border-color: var(--red); }
+  .card .num {
+    font-family: 'Archivo Black', sans-serif;
+    color: var(--red);
+    font-size: 15px;
+    letter-spacing: 3px;
+    margin-bottom: 18px;
+  }
+  .card h3 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 21px;
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin-bottom: 14px;
+  }
+  .card p { color: var(--gray); font-size: 15px; line-height: 1.55; }
+  .card p strong { color: var(--white); }
+
+  /* ---------- stat blocks ---------- */
+  .stats { display: flex; gap: 6vw; margin-top: 56px; flex-wrap: wrap; }
+  .stat .big {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(44px, 6vw, 88px);
+    color: var(--red);
+    line-height: 1;
+  }
+  .stat .label {
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gray);
+    max-width: 220px;
+    line-height: 1.5;
+  }
+
+  /* ---------- demo mock ---------- */
+  .demo-wrap {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 5vw;
+    align-items: center;
+    margin-top: 24px;
+  }
+  .mock {
+    background: var(--card);
+    border: 1px solid #262626;
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: 0 30px 80px rgba(229,9,20,.12);
+  }
+  .mock .bar { display: flex; gap: 7px; margin-bottom: 22px; }
+  .mock .dot { width: 11px; height: 11px; border-radius: 50%; background: #333; }
+  .mock .dot:first-child { background: var(--red); }
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 7px;
+  }
+  .field .input {
+    background: #0a0a0a;
+    border: 1px solid #2c2c2c;
+    border-radius: 6px;
+    padding: 13px 15px;
+    font-size: 14px;
+    color: var(--white);
+  }
+  .field .input.placeholder { color: #555; }
+  .field .input.upload {
+    border-style: dashed;
+    color: var(--gray);
+    text-align: center;
+    padding: 22px;
+  }
+  .mock .go {
+    background: var(--red);
+    text-align: center;
+    font-family: 'Archivo Black', sans-serif;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 1px;
+    border-radius: 6px;
+    padding: 15px;
+    margin-top: 6px;
+  }
+
+  .route { border-left: 4px solid var(--red); padding-left: 22px; margin-bottom: 30px; }
+  .route h4 {
+    font-family: 'Archivo Black', sans-serif;
+    text-transform: uppercase;
+    font-size: 17px;
+    margin-bottom: 6px;
+  }
+  .route .meta { font-size: 13px; color: var(--gray); letter-spacing: .5px; line-height: 1.6; }
+  .route .meta b { color: var(--white); }
+  .route .uplift { color: #46d369; font-weight: 700; }
+
+  /* ---------- pipeline ---------- */
+  .pipeline { display: flex; align-items: stretch; gap: 0; margin-top: 56px; flex-wrap: wrap; }
+  .pipe-step { flex: 1; min-width: 180px; position: relative; padding: 0 26px 0 0; }
+  .pipe-step + .pipe-step { padding-left: 26px; border-left: 1px solid #262626; }
+  .pipe-step .k {
+    font-family: 'Archivo Black', sans-serif;
+    color: var(--red);
+    font-size: 42px;
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+  .pipe-step h3 { font-size: 16px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; font-weight: 900; }
+  .pipe-step p { color: var(--gray); font-size: 14px; line-height: 1.55; }
+  .pipe-step p strong { color: var(--white); }
+
+  /* ---------- footer slide ---------- */
+  .final { align-items: flex-start; text-align: left; }
+  .contact { margin-top: 40px; font-size: 15px; color: var(--gray); letter-spacing: 1px; }
+  .contact a { color: var(--white); text-decoration: none; border-bottom: 2px solid var(--red); }
+
+  /* slide counter */
+  .counter {
+    position: fixed;
+    bottom: 24px; right: 3vw;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--gray);
+    z-index: 100;
+  }
+  .counter b { color: var(--red); }
+
+  .hint {
+    position: fixed;
+    bottom: 24px; left: 3vw;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    z-index: 100;
+  }
+
+  @media (max-width: 900px) {
+    .grid.cols-3, .grid.cols-4 { grid-template-columns: 1fr; }
+    .demo-wrap { grid-template-columns: 1fr; }
+    .pipe-step + .pipe-step { border-left: none; padding-left: 0; margin-top: 30px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">Reno<span>vate</span></div>
+  <nav>
+    <a href="#problem">Problem</a>
+    <a href="#solution">Product</a>
+    <a href="#how">How&nbsp;It&nbsp;Works</a>
+    <a href="#market">Market</a>
+    <a href="#ask">The&nbsp;Ask</a>
+  </nav>
+</header>
+
+<!-- 1 · HERO -->
+<section class="slide" id="hero">
+  <h1 class="stack">
+    <span class="line">An architect</span>
+    <span class="line outline">in your</span>
+    <span class="line red">pocket</span>
+  </h1>
+  <p class="lede"><strong>AI-native home renovation for Bay Area homeowners.</strong>
+  Upload your floor plan, describe your dream in plain English, and get feasible,
+  budget-fit renovation routes — before you ever call a contractor.</p>
+  <a class="btn" href="#problem">See the pitch</a>
+</section>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <b>Address</b><em>→</em><b>Floor plan</b><em>→</em><b>Prompt</b><em>→</em><b>Feasibility</b><em>→</em><b>Value</b><em>•</em>
+    <b>Address</b><em>→</em><b>Floor plan</b><em>→</em><b>Prompt</b><em>→</em><b>Feasibility</b><em>→</em><b>Value</b><em>•</em>
+  </div>
+</div>
+
+<!-- 2 · PROBLEM -->
+<section class="slide" id="problem">
+  <div class="eyebrow">The Problem</div>
+  <h2 class="stack" style="font-size: clamp(40px, 7.5vw, 110px);">
+    <span class="line">Renovation is</span>
+    <span class="line red">a black box</span>
+  </h2>
+  <div class="grid cols-3">
+    <div class="card">
+      <div class="num">01</div>
+      <h3>Nobody knows what's feasible</h3>
+      <p>Is that wall load-bearing? Is the foundation slab or raised? Homeowners can't answer the questions that decide <strong>everything</strong> — so they guess, or stall.</p>
+    </div>
+    <div class="card">
+      <div class="num">02</div>
+      <h3>Quotes are wild guesses</h3>
+      <p>Contractor bids for the same job swing <strong>2–3×</strong>. Without an independent feasibility baseline, homeowners negotiate blind.</p>
+    </div>
+    <div class="card">
+      <div class="num">03</div>
+      <h3>Permits are county chaos</h3>
+      <p>Every Bay Area county plays by different rules. What's a weekend project in one city is a <strong>6-month permit saga</strong> in the next.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · SOLUTION -->
+<section class="slide" id="solution">
+  <div class="eyebrow">The Product</div>
+  <div class="demo-wrap">
+    <div>
+      <h2 class="stack" style="font-size: clamp(34px, 5vw, 72px);">
+        <span class="line">Describe it.</span>
+        <span class="line red">We scope it.</span>
+      </h2>
+      <p class="lede">One seamless flow: your <strong>address</strong>, your <strong>floor plan</strong>,
+      your renovation wish in <strong>natural language</strong>, and an optional <strong>budget</strong>.
+      That's the whole interface.</p>
+    </div>
+    <div class="mock">
+      <div class="bar"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      <div class="field">
+        <label>Home address</label>
+        <div class="input">742 Cedar Ave, San Mateo, CA</div>
+      </div>
+      <div class="field">
+        <label>Floor plan</label>
+        <div class="input upload">⬆ &nbsp;floorplan_1962_ranch.pdf</div>
+      </div>
+      <div class="field">
+        <label>What do you want to do?</label>
+        <div class="input">"Add two bathrooms and break down the master suite."</div>
+      </div>
+      <div class="field">
+        <label>Budget (optional)</label>
+        <div class="input placeholder">$150,000</div>
+      </div>
+      <div class="go">Check feasibility</div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · HOW IT WORKS -->
+<section class="slide" id="how">
+  <div class="eyebrow">How It Works</div>
+  <h2 class="stack" style="font-size: clamp(34px, 5vw, 72px);">
+    <span class="line">The agent does</span>
+    <span class="line red">the homework</span>
+  </h2>
+  <div class="pipeline">
+    <div class="pipe-step">
+      <div class="k">1</div>
+      <h3>Search</h3>
+      <p>A web-search agent hits <strong>Zillow &amp; Redfin only</strong> with your address. Scoped, fast, reliable.</p>
+    </div>
+    <div class="pipe-step">
+      <div class="k">2</div>
+      <h3>Profile</h3>
+      <p>It infers your house: <strong>ranch or two-story, slab or raised foundation, load-bearing walls, sqft, year built</strong>.</p>
+    </div>
+    <div class="pipe-step">
+      <div class="k">3</div>
+      <h3>Feasibility</h3>
+      <p>A rules engine crosses your prompt with <strong>county permit knowledge</strong> and your budget.</p>
+    </div>
+    <div class="pipe-step">
+      <div class="k">4</div>
+      <h3>Routes</h3>
+      <p>Up to <strong>3 renovation routes</strong>, each an isometric visualization with cost range and value uplift.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · OUTPUT -->
+<section class="slide" id="output">
+  <div class="eyebrow">The Output</div>
+  <div class="demo-wrap">
+    <div>
+      <h2 class="stack" style="font-size: clamp(34px, 5vw, 72px);">
+        <span class="line">Three routes.</span>
+        <span class="line red">Real numbers.</span>
+      </h2>
+      <p class="lede">Every route shows what it costs — and what it's <strong>worth</strong>.
+      Pre-renovation valuation vs. projected post-renovation valuation, straight from comps.</p>
+    </div>
+    <div>
+      <div class="route">
+        <h4>Route A — Split the suite</h4>
+        <div class="meta">2 new baths · non-bearing partition removal<br>
+        <b>$118k–$142k</b> · <span class="uplift">+$210k est. value</span> · permits: San Mateo Co. ✓</div>
+      </div>
+      <div class="route">
+        <h4>Route B — Bath + junior suite</h4>
+        <div class="meta">1 new bath · master reconfigured, wall retained<br>
+        <b>$86k–$104k</b> · <span class="uplift">+$155k est. value</span> · permits: over-the-counter</div>
+      </div>
+      <div class="route">
+        <h4>Route C — Full reconfigure</h4>
+        <div class="meta">2 baths · load-bearing beam work · slab trenching<br>
+        <b>$168k–$205k</b> · <span class="uplift">+$260k est. value</span> · ⚠ exceeds budget</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · MARKET -->
+<section class="slide" id="market">
+  <div class="eyebrow">Why Here, Why Now</div>
+  <h2 class="stack" style="font-size: clamp(40px, 7.5vw, 110px);">
+    <span class="line">The Bay Area is</span>
+    <span class="line red">the beachhead</span>
+  </h2>
+  <div class="stats">
+    <div class="stat">
+      <div class="big">$1.4M</div>
+      <div class="label">Median Bay Area home value — every decision is high-stakes</div>
+    </div>
+    <div class="stat">
+      <div class="big">2–3×</div>
+      <div class="label">Spread between contractor bids for the same renovation</div>
+    </div>
+    <div class="stat">
+      <div class="big">1</div>
+      <div class="label">County at launch. Nail it, then expand across the Bay</div>
+    </div>
+  </div>
+  <p class="lede">Renovation ROI is highest where home values are highest.
+  We start with <strong>one county</strong>, encode its permit rules deeply, and win trust before scaling.</p>
+</section>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <b>Scoped MVP</b><em>•</em><b>Zillow + Redfin</b><em>•</em><b>One county</b><em>•</em><b>Always demos</b><em>•</em>
+    <b>Scoped MVP</b><em>•</em><b>Zillow + Redfin</b><em>•</em><b>One county</b><em>•</em><b>Always demos</b><em>•</em>
+  </div>
+</div>
+
+<!-- 7 · ASK -->
+<section class="slide final" id="ask">
+  <div class="eyebrow">The MVP — Definition of Done</div>
+  <h2 class="stack" style="font-size: clamp(40px, 7.5vw, 110px);">
+    <span class="line">Built to demo</span>
+    <span class="line red">end to end</span>
+  </h2>
+  <div class="grid cols-4">
+    <div class="card"><div class="num">UI</div><p>Address input, floor-plan upload, natural-language prompt, optional budget field.</p></div>
+    <div class="card"><div class="num">Agent</div><p>Zillow/Redfin search → house profile: style, foundation, load-bearing walls, sqft, year.</p></div>
+    <div class="card"><div class="num">Engine</div><p>Budget + Bay Area county permit knowledge → feasibility verdicts.</p></div>
+    <div class="card"><div class="num">Fallback</div><p>Graceful no-API-key mode. <strong>It always demos.</strong></p></div>
+  </div>
+  <div class="contact">Wali Viqas · <a href="mailto:wali@viqas.com">wali@viqas.com</a></div>
+</section>
+
+<div class="counter"><b id="cur">1</b> / <span id="total">7</span></div>
+<div class="hint">↑ ↓ arrows or scroll</div>
+
+<script>
+  const slides = [...document.querySelectorAll('section.slide')];
+  document.getElementById('total').textContent = slides.length;
+
+  function currentIndex() {
+    const y = window.scrollY + window.innerHeight / 2;
+    let idx = 0;
+    slides.forEach((s, i) => { if (s.offsetTop <= y) idx = i; });
+    return idx;
+  }
+  function updateCounter() {
+    document.getElementById('cur').textContent = currentIndex() + 1;
+  }
+  window.addEventListener('scroll', updateCounter, { passive: true });
+
+  document.addEventListener('keydown', (e) => {
+    const i = currentIndex();
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+      e.preventDefault();
+      slides[Math.min(i + 1, slides.length - 1)].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      slides[Math.max(i - 1, 0)].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+</script>
+</body>
+</html>

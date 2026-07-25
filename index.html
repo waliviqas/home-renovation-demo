@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architect in Your Pocket</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* orange spectrum */
+    --o-900:#B02E00;
+    --o-700:#F04E00;
+    --o-500:#FF6A00;
+    --o-300:#FF9A3D;
+    --o-100:#FFC98A;
+    /* canvas + ink */
+    --paper:#FBF8F5;
+    --ink:#1A1411;
+    --ink-mid:#6A5F57;
+    --ink-soft:#9A8E85;
+    --good:#0E8F5B;
+    /* glass */
+    --glass:linear-gradient(150deg,rgba(255,255,255,.76) 0%,rgba(255,231,206,.5) 100%);
+    --glass-line:rgba(255,255,255,.9);
+    --glass-shadow:0 0 0 1px rgba(255,122,36,.14), 0 28px 60px -22px rgba(176,46,0,.45), 0 3px 12px rgba(176,46,0,.08);
+    --inset-hi:inset 0 1px 0 rgba(255,255,255,.98), inset 0 -1px 0 rgba(255,140,60,.22);
+    /* live accent — the gallery retunes this per slide */
+    --accent:255,106,0;
+    /* pointer parallax, set from JS */
+    --mx:0; --my:0;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  /* the page is light; without this the OS renders a dark scrollbar down the
+     side in dark mode, which reads as a grey bar over the design */
+  html{background:var(--paper);color-scheme:light;scrollbar-color:rgba(255,106,0,.45) transparent;scrollbar-width:thin}
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--o-300),var(--o-700));border-radius:99px}
+  body{
+    background:transparent;              /* html carries the paper colour; an
+                                            opaque body would paint over the
+                                            negative z-index light layers */
+    color:var(--ink);
+    font-family:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ══════════ act 0 · title card ══════════
+     Same pinned-scroll infrastructure as every other act — the wordmark
+     assembles as you scroll through it, it is not a timed intro. */
+  #act-title .pin{padding:0;align-items:center;justify-content:center}
+  .titleWrap{
+    position:relative;width:100%;height:100%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+  }
+  .introGrid{
+    position:absolute;inset:0;opacity:0;
+    background-image:
+      linear-gradient(rgba(255,106,0,.16) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,106,0,.16) 1px,transparent 1px);
+    background-size:64px 64px;
+    -webkit-mask-image:radial-gradient(58% 58% at 50% 50%,#000,transparent 78%);
+            mask-image:radial-gradient(58% 58% at 50% 50%,#000,transparent 78%);
+  }
+  .introRing{
+    position:absolute;top:50%;left:50%;width:34vmin;height:34vmin;margin:-17vmin 0 0 -17vmin;
+    border-radius:50%;border:1px solid rgba(255,106,0,.55);opacity:0;
+  }
+  .introMark{
+    position:relative;display:flex;align-items:center;
+    font-family:'Outfit',sans-serif;font-weight:800;
+    font-size:clamp(44px,10.5vw,168px);letter-spacing:-.045em;line-height:1;
+    perspective:900px;
+  }
+  .introMark .lw{display:inline-block;overflow:hidden;padding:.06em .012em}
+  .introMark .lw > b{display:inline-block;font-weight:inherit;transform-origin:50% 100%}
+  .introMark .hot > b{
+    background:linear-gradient(150deg,var(--o-300),var(--o-500) 45%,var(--o-900));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .introScan{
+    position:absolute;top:-40%;height:180%;width:30%;pointer-events:none;
+    background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.95) 45%,
+                                     rgba(255,190,110,.7) 62%,rgba(255,255,255,0));
+    filter:blur(24px);opacity:0;mix-blend-mode:overlay;
+  }
+  .introSub{
+    margin-top:4vmin;white-space:nowrap;
+    font-size:clamp(10px,1.1vw,13px);font-weight:600;
+    letter-spacing:.42em;text-transform:uppercase;color:var(--o-700);opacity:0;
+  }
+
+  /* ══════════ liquid backdrop ══════════
+     Fixed, slowly drifting warm blobs. Everything glassy above it
+     refracts THIS — without it, backdrop-filter has nothing to show. */
+  .liquid{position:fixed;inset:0;z-index:-3;overflow:hidden;
+    background:linear-gradient(165deg,#FFF6EC 0%,var(--paper) 40%,#FFEFE0 100%)}
+  .blob{position:absolute;border-radius:50%;filter:blur(60px)}
+  .b1{width:62vw;height:62vw;left:-14vw;top:-18vw;
+      background:radial-gradient(circle at 40% 40%,rgba(var(--accent),.8),rgba(255,106,0,0) 62%);
+      animation:drift1 26s ease-in-out infinite alternate}
+  .b2{width:54vw;height:54vw;right:-12vw;top:6vh;
+      background:radial-gradient(circle at 50% 50%,rgba(255,166,48,.9),rgba(255,166,48,0) 62%);
+      animation:drift2 32s ease-in-out infinite alternate}
+  .b3{width:52vw;height:52vw;left:20vw;bottom:-22vw;
+      background:radial-gradient(circle at 50% 50%,rgba(var(--accent),.55),rgba(255,72,20,0) 62%);
+      animation:drift3 38s ease-in-out infinite alternate}
+  .b4{width:44vw;height:44vw;right:12vw;bottom:-10vw;
+      background:radial-gradient(circle at 50% 50%,rgba(255,201,110,.95),rgba(255,201,110,0) 62%);
+      animation:drift1 30s ease-in-out infinite alternate-reverse}
+  @keyframes drift1{to{transform:translate3d(9vw,7vh,0) scale(1.14)}}
+  @keyframes drift2{to{transform:translate3d(-11vw,10vh,0) scale(.88)}}
+  @keyframes drift3{to{transform:translate3d(7vw,-9vh,0) scale(1.2)}}
+  /* milky veil: enough to keep body copy legible, not enough to erase the colour */
+  .veil{position:fixed;inset:0;z-index:-2;pointer-events:none;
+    background:radial-gradient(120% 80% at 50% 30%,rgba(255,252,248,.42),rgba(255,249,243,.72) 70%);
+  }
+
+  /* ══════════ moving rays of light ══════════
+     Netflix runs a looping ambient-light .webm on a FIXED container so it never
+     seams between sections. Same idea, done in CSS: one fixed field for the whole
+     page — scroll only modulates it, it is never rebuilt per act. */
+  .lightfield{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;
+    transform:translate3d(calc(var(--mx) * 20px),calc(var(--my) * 12px),0)}
+  /* Curtains of light down the left and right edges, centre left clear so the
+     type stays readable. Each curtain is three layers of vertical striations
+     scrolling sideways at different speeds — the interference between the
+     layers is what makes it look liquid rather than like moving stripes. */
+  .curtain{position:absolute;top:0;bottom:0;width:33vw;overflow:hidden;opacity:.7;
+           filter:blur(9px) saturate(155%)}
+  .curtain.l{left:0;
+    -webkit-mask-image:linear-gradient(90deg,#000 0%,rgba(0,0,0,.8) 26%,transparent 86%);
+            mask-image:linear-gradient(90deg,#000 0%,rgba(0,0,0,.8) 26%,transparent 86%)}
+  .curtain.r{right:0;
+    -webkit-mask-image:linear-gradient(270deg,#000 0%,rgba(0,0,0,.8) 26%,transparent 86%);
+            mask-image:linear-gradient(270deg,#000 0%,rgba(0,0,0,.8) 26%,transparent 86%)}
+  .curtain span{
+    position:absolute;inset:-16% -34%;display:block;
+    background-repeat:repeat;
+    background-size:var(--tile) 100%;
+    /* tilt the whole layer, not the gradient — an angled gradient would seam */
+    transform:rotate(var(--tilt,-3deg)) scale(1.24);
+    -webkit-mask-image:linear-gradient(180deg,transparent,#000 15%,#000 85%,transparent);
+            mask-image:linear-gradient(180deg,transparent,#000 15%,#000 85%,transparent);
+    animation:flowX var(--sp) linear infinite,
+              breathe var(--bp) ease-in-out infinite alternate;
+  }
+  /* translating by exactly one tile makes the loop seamless */
+  @keyframes flowX{to{background-position:var(--tile) 0}}
+  @keyframes breathe{to{opacity:var(--o2);transform:rotate(var(--tilt,-3deg)) scale(1.34) translateY(var(--dy,-4%))}}
+
+  .c1{--tile:250px;--sp:4s;--bp:3.4s;--o2:.45;--dy:-5%;opacity:.95;
+    background-image:repeating-linear-gradient(90deg,
+      rgba(255,106,0,0)    0px,
+      rgba(255,106,0,.5)   16px,
+      rgba(255,160,50,.2)  38px,
+      rgba(255,255,255,.9) 48px,
+      rgba(255,120,10,.34) 60px,
+      rgba(255,106,0,0)    96px)}
+  .c2{--tile:163px;--sp:2.6s;--bp:2.3s;--o2:.8;--dy:4%;opacity:.5;--tilt:2.5deg;
+    animation-direction:reverse,alternate;
+    background-image:repeating-linear-gradient(90deg,
+      rgba(255,190,90,0)   0px,
+      rgba(255,190,90,.42) 12px,
+      rgba(255,255,255,.7) 22px,
+      rgba(255,150,40,.26) 40px,
+      rgba(255,190,90,0)   72px)}
+  .c3{--tile:430px;--sp:6.2s;--bp:4.8s;--o2:.35;--dy:-7%;opacity:.75;--tilt:-6deg;
+    background-image:repeating-linear-gradient(90deg,
+      rgba(240,78,0,0)     0px,
+      rgba(240,78,0,.42)   40px,
+      rgba(255,96,0,.16)   120px,
+      rgba(240,78,0,0)     210px)}
+  /* a glint sweeps the curtain every few seconds — real liquid glass catches
+     the light in passes, it doesn't shimmer uniformly */
+  .curtain i{
+    position:absolute;top:-10%;height:120%;width:26%;pointer-events:none;
+    background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.9) 42%,
+                                     rgba(255,190,110,.55) 62%,rgba(255,255,255,0));
+    filter:blur(15px);opacity:0;
+    animation:glint 6.5s ease-in-out infinite;
+  }
+  .curtain.r i{animation-delay:-3.25s}
+  @keyframes glint{
+    0%  {transform:translateX(-130%);opacity:0}
+    10% {opacity:1}
+    34% {transform:translateX(330%);opacity:0}
+    100%{transform:translateX(330%);opacity:0}
+  }
+
+  /* warm halo that follows the scroll so glass always has colour behind it */
+  .halo{position:absolute;inset:0;
+    background:
+      radial-gradient(42% 46% at var(--hx,70%) var(--hy,46%),rgba(var(--accent),.42),rgba(255,138,38,0) 72%),
+      radial-gradient(58% 40% at 26% var(--hy2,80%),rgba(255,190,100,.44),rgba(255,190,100,0) 72%);
+  }
+
+  /* ══════════ pinned-scroll scaffold ══════════ */
+  .act{position:relative;width:100%}
+  .pin{
+    position:sticky;top:0;height:100vh;overflow:hidden;
+    display:flex;flex-direction:column;justify-content:center;padding:96px 6vw 56px;
+  }
+
+  /* ══════════ nav — floating glass pill ══════════ */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:200;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:20px 3vw;pointer-events:none;
+  }
+  .brand{
+    font-family:'Outfit',sans-serif;font-weight:800;font-size:21px;text-transform:uppercase;
+    letter-spacing:-.02em;
+    background:linear-gradient(120deg,var(--o-700),var(--o-300));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .brand span{color:var(--ink);-webkit-text-fill-color:var(--ink)}
+  header nav{
+    pointer-events:auto;display:flex;gap:4px;padding:7px;border-radius:999px;
+    background:var(--glass);backdrop-filter:blur(18px) saturate(180%);
+    -webkit-backdrop-filter:blur(18px) saturate(180%);
+    border:1px solid var(--glass-line);box-shadow:var(--glass-shadow),var(--inset-hi);
+  }
+  header nav a{
+    color:var(--ink-mid);text-decoration:none;font-size:12px;font-weight:600;
+    letter-spacing:.02em;padding:9px 16px;border-radius:999px;
+    transition:color .2s,background .2s;
+  }
+  header nav a:hover{color:var(--ink);background:rgba(255,255,255,.7)}
+  .viewbtn{
+    pointer-events:auto;text-decoration:none;font-family:'Outfit',sans-serif;font-weight:700;
+    font-size:13px;letter-spacing:.01em;color:#fff;padding:13px 22px;border-radius:999px;
+    background:linear-gradient(135deg,var(--o-500),var(--o-700));
+    box-shadow:0 10px 26px -8px rgba(240,78,0,.7), inset 0 1px 0 rgba(255,255,255,.42);
+    transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s;
+  }
+  .viewbtn:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 16px 34px -10px rgba(240,78,0,.85), inset 0 1px 0 rgba(255,255,255,.5)}
+
+  /* scroll rail */
+  .rail{position:fixed;top:0;left:0;height:3px;width:0;z-index:300;
+        background:linear-gradient(90deg,var(--o-300),var(--o-700));
+        box-shadow:0 0 14px rgba(255,106,0,.6)}
+
+  /* ══════════ split-word mask reveal ══════════ */
+  .line{
+    font-family:'Outfit',sans-serif;font-weight:800;
+    line-height:.94;letter-spacing:-.035em;
+    display:flex;flex-wrap:wrap;align-items:center;gap:0 .2em;
+  }
+  .w{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.06em}
+  .w > i{display:inline-block;font-style:normal;transform:translateY(110%);will-change:transform}
+  /* orange gradient fill that slowly flows through the letters */
+  .w.hot > i{
+    background:linear-gradient(100deg,var(--o-300) 0%,var(--o-500) 30%,var(--o-900) 55%,var(--o-500) 80%,var(--o-300) 100%);
+    background-size:250% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:flow 9s linear infinite;
+  }
+  @keyframes flow{to{background-position:250% 0}}
+  /* outlined */
+  .w.hollow > i{color:transparent;-webkit-text-stroke:2px var(--o-500)}
+
+  /* peekaboo slot — opens from zero width and shoulders the words apart */
+  .peek{
+    display:inline-block;overflow:hidden;border-radius:18px;flex:0 0 auto;align-self:center;
+    width:0;border:1px solid var(--glass-line);
+  }
+  .peek > .peekInner{display:block;height:100%;will-change:transform}
+
+  /* ══════════ hero ══════════ */
+  .hero-type{font-size:clamp(38px,8.2vw,124px)}
+  .hero-sub{
+    margin-top:34px;max-width:640px;font-size:clamp(15px,1.35vw,19px);line-height:1.65;
+    color:var(--ink-mid);opacity:0;will-change:opacity,transform;
+  }
+  .hero-sub strong{color:var(--ink);font-weight:600}
+  .scrollcue{
+    position:absolute;bottom:34px;left:6vw;
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);
+  }
+  .scrollcue i{display:inline-block;font-style:normal;animation:bob 2.2s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(5px)}}
+
+  /* ══════════ generic act headline ══════════ */
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:9px;align-self:flex-start;
+    font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--o-700);margin-bottom:22px;opacity:0;will-change:opacity;
+    padding:9px 16px;border-radius:999px;
+    background:var(--glass);backdrop-filter:blur(14px) saturate(180%);
+    -webkit-backdrop-filter:blur(14px) saturate(180%);
+    border:1px solid var(--glass-line);box-shadow:var(--inset-hi);
+  }
+  .eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;
+    background:var(--o-500);box-shadow:0 0 10px var(--o-500)}
+  .act-type{font-size:clamp(32px,6vw,92px)}
+
+  /* ══════════ glass ══════════ */
+  .glass{
+    position:relative;overflow:hidden;
+    background:var(--glass);
+    backdrop-filter:blur(22px) saturate(185%);
+    -webkit-backdrop-filter:blur(22px) saturate(185%);
+    border:1px solid var(--glass-line);
+    border-radius:22px;
+    box-shadow:var(--glass-shadow),var(--inset-hi);
+  }
+  /* specular sheen across the top-left of every glass surface */
+  .glass::after{
+    content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+    background:linear-gradient(135deg,rgba(255,255,255,.62) 0%,rgba(255,255,255,0) 38%);
+  }
+
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px}
+  .card{padding:30px 26px;opacity:0;will-change:opacity,transform}
+  .card .num{
+    font-family:'Outfit',sans-serif;font-weight:800;font-size:13px;letter-spacing:.2em;margin-bottom:14px;
+    background:linear-gradient(120deg,var(--o-500),var(--o-900));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .card h3{font-family:'Outfit',sans-serif;font-weight:700;font-size:20px;line-height:1.2;margin-bottom:12px;letter-spacing:-.015em}
+  .card p{color:var(--ink-mid);font-size:14.5px;line-height:1.65}
+  .card p strong{color:var(--ink);font-weight:600}
+
+  /* ══════════ gallery: cards that come at you ══════════
+     Netflix's mid-page acts scale a card up toward the viewer while it
+     dissolves into the next one. Neighbours overlap on purpose — drawing only
+     the current slide leaves a blank frame at every boundary. */
+  .gal-frame{position:relative;height:100vh}
+  .slide{position:absolute;inset:0;display:grid;place-items:center;
+         opacity:0;pointer-events:none;will-change:opacity}
+  .zoom{
+    position:relative;width:86vw;max-width:1380px;height:74vh;
+    display:flex;align-items:center;gap:4vw;padding:5vh 4.5vw;
+    border-radius:34px;overflow:hidden;transform-origin:50% 52%;
+    background:var(--glass);
+    backdrop-filter:blur(26px) saturate(190%);
+    -webkit-backdrop-filter:blur(26px) saturate(190%);
+    border:1px solid var(--glass-line);
+    box-shadow:0 0 0 1px rgba(255,122,36,.16), 0 60px 120px -50px rgba(var(--accent),.75), var(--inset-hi);
+    will-change:transform;
+  }
+  .zoom::after{
+    content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+    background:
+      linear-gradient(135deg,rgba(255,255,255,.6) 0%,rgba(255,255,255,0) 34%),
+      radial-gradient(60% 70% at 88% 50%,rgba(var(--accent),.22),rgba(255,255,255,0) 70%);
+  }
+  .zoom .txt{flex:1 1 46%;position:relative;z-index:1}
+  .zoom .vis{flex:1 1 54%;position:relative;z-index:1}
+  .slide h2{
+    font-family:'Outfit',sans-serif;font-weight:800;
+    font-size:clamp(28px,4.2vw,60px);line-height:1;margin-bottom:20px;letter-spacing:-.035em;
+  }
+  .slide h2 em{
+    font-style:normal;
+    background:linear-gradient(120deg,var(--o-300),var(--o-700) 55%,var(--o-900));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .slide p{color:var(--ink-mid);font-size:clamp(14px,1.2vw,17px);line-height:1.68;max-width:520px}
+  .slide p strong{color:var(--ink);font-weight:600}
+  .gal-count{
+    position:absolute;bottom:34px;right:6vw;z-index:5;
+    font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;letter-spacing:.14em;color:var(--ink-soft);
+    padding:9px 16px;border-radius:999px;
+    background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border:1px solid var(--glass-line);box-shadow:var(--inset-hi);
+  }
+  .gal-count b{color:var(--o-700)}
+
+  /* app mock */
+  .mock{padding:24px;border-radius:18px;background:rgba(255,255,255,.5);
+        border:1px solid var(--glass-line);box-shadow:var(--inset-hi)}
+  .mock .bar{display:flex;gap:7px;margin-bottom:18px}
+  .mock .dot{width:10px;height:10px;border-radius:50%;background:rgba(26,20,17,.14)}
+  .mock .dot:first-child{background:var(--o-500);box-shadow:0 0 10px rgba(255,106,0,.7)}
+  .field{margin-bottom:12px}
+  .field label{display:block;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px}
+  .field .input{
+    background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.9);
+    border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--ink);
+    box-shadow:inset 0 1px 2px rgba(176,46,0,.06);
+  }
+  .field .input.ph{color:var(--ink-soft)}
+  .field .input.up{border-style:dashed;border-color:rgba(255,106,0,.45);color:var(--o-700);text-align:center;padding:18px}
+  .mock .go{
+    text-align:center;color:#fff;font-family:'Outfit',sans-serif;font-weight:700;
+    font-size:14px;letter-spacing:.01em;border-radius:12px;padding:15px;margin-top:6px;
+    background:linear-gradient(135deg,var(--o-500),var(--o-700));
+    box-shadow:0 12px 28px -10px rgba(240,78,0,.75), inset 0 1px 0 rgba(255,255,255,.4);
+  }
+
+  /* pipeline step visual */
+  .stepbig{
+    font-family:'Outfit',sans-serif;font-weight:800;font-size:clamp(80px,13vw,200px);line-height:.82;
+    letter-spacing:-.05em;
+    background:linear-gradient(165deg,var(--o-300),var(--o-500) 45%,var(--o-900));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 16px 34px rgba(240,78,0,.28));
+  }
+  .steplist{margin-top:22px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+  .steplist div{
+    font-size:13px;color:var(--ink-soft);letter-spacing:.12em;text-transform:uppercase;font-weight:600;
+    padding:8px 16px;border-radius:999px;border:1px solid transparent;
+  }
+  .steplist div.on{
+    color:var(--o-900);background:rgba(255,255,255,.62);
+    border-color:var(--glass-line);box-shadow:var(--inset-hi);
+  }
+  .steplist div.on::before{content:"▸ ";color:var(--o-500)}
+
+  /* routes */
+  .route{position:relative;padding:16px 20px;margin-bottom:12px;border-radius:16px;
+         background:rgba(255,255,255,.52);border:1px solid var(--glass-line);box-shadow:var(--inset-hi)}
+  .route h4{font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;margin-bottom:5px;letter-spacing:-.01em}
+  .route .meta{font-size:13px;color:var(--ink-mid);line-height:1.65}
+  .route .meta b{color:var(--ink);font-weight:600}
+  .route .up{color:var(--good);font-weight:600}
+  .route::before{
+    content:"";position:absolute;left:0;top:16%;bottom:16%;width:4px;border-radius:0 4px 4px 0;
+    background:linear-gradient(180deg,var(--o-300),var(--o-700));
+  }
+
+  /* ══════════ mission word-by-word ══════════ */
+  .mission{
+    font-family:'Outfit',sans-serif;font-weight:800;
+    font-size:clamp(21px,3.2vw,46px);line-height:1.16;letter-spacing:-.03em;
+    display:flex;flex-wrap:wrap;gap:0 .24em;max-width:1000px;
+  }
+  .mission span{opacity:.16;transition:opacity .2s linear;will-change:opacity}
+  .mission span.lit{opacity:1}
+  .mission span.acc{
+    background:linear-gradient(120deg,var(--o-300),var(--o-700) 55%,var(--o-900));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .cta{
+    display:inline-block;text-decoration:none;color:#fff;align-self:flex-start;
+    font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;letter-spacing:.01em;
+    padding:17px 40px;margin-top:30px;border-radius:999px;
+    background:linear-gradient(135deg,var(--o-500),var(--o-700));
+    box-shadow:0 18px 40px -14px rgba(240,78,0,.8), inset 0 1px 0 rgba(255,255,255,.42);
+    opacity:0;will-change:opacity,transform;
+    transition:transform .25s cubic-bezier(.2,.8,.2,1);
+  }
+  .cta:hover{transform:translateY(-3px) scale(1.03)}
+
+  /* stats */
+  .stats{display:flex;gap:14px;margin-top:32px;flex-wrap:wrap}
+  .stat{padding:20px 24px;flex:1 1 220px;opacity:0;will-change:opacity,transform}
+  .stat .big{
+    font-family:'Outfit',sans-serif;font-weight:800;font-size:clamp(32px,4.2vw,56px);line-height:1;
+    letter-spacing:-.04em;
+    background:linear-gradient(160deg,var(--o-300),var(--o-700) 55%,var(--o-900));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .stat .lb{margin-top:10px;font-size:12px;font-weight:500;text-transform:uppercase;
+    letter-spacing:.1em;color:var(--ink-mid);max-width:230px;line-height:1.55;position:relative;z-index:1}
+
+  /* ══════════ closing ══════════ */
+  .contact{margin-top:28px;font-size:15px;color:var(--ink-mid);opacity:0;will-change:opacity}
+  .contact a{color:var(--ink);text-decoration:none;font-weight:600;
+    background:linear-gradient(90deg,var(--o-300),var(--o-700));
+    background-size:100% 2px;background-repeat:no-repeat;background-position:0 100%;padding-bottom:2px}
+
+  /* ══════════ reduced motion ══════════ */
+  @media (prefers-reduced-motion: reduce){
+    .w > i{transform:none !important}
+    .hero-sub,.eyebrow,.card,.cta,.stat,.contact{opacity:1 !important;transform:none !important}
+    .mission span{opacity:1 !important}
+    .slide{position:relative;opacity:1 !important;height:auto;padding:8vh 0}
+    .zoom{transform:none !important;height:auto;width:88vw}
+    .gal-frame{height:auto}
+    .act{height:auto !important}
+    .pin{position:relative;height:auto;padding:12vh 6vw}
+    .blob,.curtain span,.curtain i,.w.hot > i,.scrollcue i{animation:none !important}
+    .peek{width:auto !important}
+  }
+
+  @media (max-width:900px){
+    .cards{grid-template-columns:1fr;gap:12px}
+    .card{padding:20px}
+    .zoom{flex-direction:column;align-items:flex-start;gap:22px;height:78vh;overflow-y:auto}
+    .zoom .vis{width:100%}
+    header nav,.viewbtn{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- liquid backdrop: what all the glass refracts -->
+<div class="liquid" aria-hidden="true">
+  <div class="blob b1"></div><div class="blob b2"></div>
+  <div class="blob b3"></div><div class="blob b4"></div>
+</div>
+<div class="veil" aria-hidden="true"></div>
+<!-- one continuous light field for the whole page — never rebuilt per act -->
+<div class="lightfield" aria-hidden="true">
+  <div class="curtain l"><span class="c1"></span><span class="c2"></span><span class="c3"></span><i></i></div>
+  <div class="curtain r"><span class="c1"></span><span class="c2"></span><span class="c3"></span><i></i></div>
+  <div class="halo" data-halo></div>
+</div>
+
+<div class="rail" id="rail"></div>
+
+<header>
+  <div class="brand">Reno<span>vate</span></div>
+  <nav>
+    <a href="#act-problem">Problem</a>
+    <a href="#act-gallery">Product</a>
+    <a href="#act-mission">Why&nbsp;now</a>
+    <a href="#act-close">Contact</a>
+  </nav>
+  <a class="viewbtn" href="mailto:wali@viqas.com">Get&nbsp;in&nbsp;touch</a>
+</header>
+
+<!-- ═══════ ACT 0 · TITLE CARD (2.5 viewports pinned) ═══════ -->
+<section class="act" id="act-title" style="height:250vh">
+  <div class="pin">
+    <div class="titleWrap" data-title>
+      <div class="introGrid" data-grid></div>
+      <div class="introRing" data-ring></div>
+      <div class="introRing" data-ring></div>
+      <div class="introMark" id="introMark"><div class="introScan" data-scan></div></div>
+      <div class="introSub" data-sub>An architect in your pocket</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ ACT 1 · HERO PEEKABOO (3 viewports pinned) ═══════ -->
+<section class="act" id="act-hero" style="height:300vh">
+  <div class="pin">
+    <div class="sr-only" style="position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden">
+      An architect in your pocket
+    </div>
+    <div class="line hero-type" aria-hidden="true">
+      <span class="w"><i>An</i></span>
+      <span class="w hot"><i>architect</i></span>
+    </div>
+    <div class="line hero-type" aria-hidden="true">
+      <span class="w hollow"><i>in</i></span>
+      <span class="peek" data-peek>
+        <span class="peekInner">
+          <svg viewBox="0 0 220 130" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+            <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#FFB05A"/><stop offset="1" stop-color="#F04E00"/>
+            </linearGradient></defs>
+            <rect width="220" height="130" fill="url(#g1)"/>
+            <g stroke="#fff" stroke-width="3.4" fill="none" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M58 104 L58 60 L110 30 L162 60 L162 104 Z"/>
+              <path d="M100 104 L100 78 L124 78 L124 104" opacity=".9"/>
+              <rect x="70" y="66" width="18" height="16" opacity=".7"/>
+              <rect x="134" y="66" width="18" height="16" opacity=".7"/>
+              <path d="M36 104 L184 104" opacity=".85"/>
+            </g>
+          </svg>
+        </span>
+      </span>
+      <span class="w hollow"><i>your</i></span>
+      <span class="w hot"><i>pocket</i></span>
+    </div>
+    <p class="hero-sub" data-fade>
+      <strong>AI-native home renovation for Bay Area homeowners.</strong>
+      Upload your floor plan, describe your dream in plain English, and get feasible,
+      budget-fit renovation routes — before you ever call a contractor.
+    </p>
+    <div class="scrollcue">Scroll to explore <i>↓</i></div>
+  </div>
+</section>
+
+<!-- ═══════ ACT 2 · PROBLEM (5 viewports pinned) ═══════ -->
+<section class="act" id="act-problem" style="height:500vh">
+  <div class="pin">
+    <div class="eyebrow" data-fade>The Problem</div>
+    <div class="line act-type">
+      <span class="w"><i>Renovation</i></span>
+      <span class="w"><i>is</i></span>
+      <span class="w hot"><i>a</i></span>
+      <span class="w hot"><i>black</i></span>
+      <span class="w hot"><i>box</i></span>
+    </div>
+    <div class="cards">
+      <div class="card glass" data-fade><div class="num">01</div>
+        <h3>Nobody knows what's feasible</h3>
+        <p>Is that wall load-bearing? Slab or raised foundation? Homeowners can't answer the questions that decide <strong>everything</strong> — so they guess, or stall.</p>
+      </div>
+      <div class="card glass" data-fade><div class="num">02</div>
+        <h3>Quotes are wild guesses</h3>
+        <p>Contractor bids for the same job swing <strong>2–3×</strong>. With no independent feasibility baseline, homeowners negotiate blind.</p>
+      </div>
+      <div class="card glass" data-fade><div class="num">03</div>
+        <h3>Permits are county chaos</h3>
+        <p>Every Bay Area county plays by different rules. A weekend project in one city is a <strong>6-month permit saga</strong> in the next.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ ACT 3 · GALLERY (9 viewports pinned, 6 slides that come at you) ═══════ -->
+<section class="act" id="act-gallery" style="height:900vh">
+  <div class="pin" style="padding:0">
+    <div class="gal-frame" id="gal">
+
+      <div class="slide" data-slide data-accent="255,106,0">
+        <div class="zoom">
+          <div class="txt">
+            <h2>Describe it.<br><em>We scope it.</em></h2>
+            <p>One seamless flow: your <strong>address</strong>, your <strong>floor plan</strong>,
+            your renovation wish in <strong>natural language</strong>, and an optional
+            <strong>budget</strong>. That's the whole interface.</p>
+          </div>
+          <div class="vis">
+            <div class="mock">
+              <div class="bar"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+              <div class="field"><label>Home address</label><div class="input">742 Cedar Ave, San Mateo, CA</div></div>
+              <div class="field"><label>Floor plan</label><div class="input up">⬆ floorplan_1962_ranch.pdf</div></div>
+              <div class="field"><label>What do you want to do?</label><div class="input">"Add two bathrooms and break down the master suite."</div></div>
+              <div class="field"><label>Budget (optional)</label><div class="input ph">$150,000</div></div>
+              <div class="go">Check feasibility</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-slide data-accent="255,150,30">
+        <div class="zoom">
+          <div class="txt">
+            <h2>Step one.<br><em>Search.</em></h2>
+            <p>A web-search agent hits <strong>Zillow and Redfin only</strong> with your address.
+            Two structured sources, deliberately — breadth would poison the house profile
+            every later stage depends on.</p>
+          </div>
+          <div class="vis"><div class="stepbig">1</div>
+            <div class="steplist">
+              <div class="on">Search</div><div>Profile</div><div>Feasibility</div><div>Routes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-slide data-accent="255,88,20">
+        <div class="zoom">
+          <div class="txt">
+            <h2>Step two.<br><em>Profile.</em></h2>
+            <p>It infers your actual house: <strong>ranch or two-story, slab or raised
+            foundation, load-bearing walls, square footage, year built</strong> — the facts
+            that decide what can move.</p>
+          </div>
+          <div class="vis"><div class="stepbig">2</div>
+            <div class="steplist">
+              <div>Search</div><div class="on">Profile</div><div>Feasibility</div><div>Routes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-slide data-accent="255,178,60">
+        <div class="zoom">
+          <div class="txt">
+            <h2>Step three.<br><em>Feasibility.</em></h2>
+            <p>A rules engine crosses your prompt against the house profile, your budget,
+            and <strong>county permit knowledge</strong>. This is the part that's hard to
+            copy — and it's per-jurisdiction.</p>
+          </div>
+          <div class="vis"><div class="stepbig">3</div>
+            <div class="steplist">
+              <div>Search</div><div>Profile</div><div class="on">Feasibility</div><div>Routes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-slide data-accent="255,120,0">
+        <div class="zoom">
+          <div class="txt">
+            <h2>Step four.<br><em>Routes.</em></h2>
+            <p>Up to <strong>three renovation routes</strong>, each an isometric visualization
+            with a cost range — and what the work is actually worth when it's done.</p>
+          </div>
+          <div class="vis"><div class="stepbig">4</div>
+            <div class="steplist">
+              <div>Search</div><div>Profile</div><div>Feasibility</div><div class="on">Routes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-slide data-accent="255,96,10">
+        <div class="zoom">
+          <div class="txt">
+            <h2>Three routes.<br><em>Real numbers.</em></h2>
+            <p>Every route shows what it costs <strong>and what it's worth</strong> —
+            pre-renovation valuation against projected post-renovation valuation,
+            straight from comps.</p>
+          </div>
+          <div class="vis">
+            <div class="route"><h4>Route A — Split the suite</h4>
+              <div class="meta">2 new baths · non-bearing partition removal<br>
+              <b>$118k–$142k</b> · <span class="up">+$210k est. value</span> · permits ✓</div></div>
+            <div class="route"><h4>Route B — Bath + junior suite</h4>
+              <div class="meta">1 new bath · master reconfigured, wall retained<br>
+              <b>$86k–$104k</b> · <span class="up">+$155k est. value</span> · over-the-counter</div></div>
+            <div class="route"><h4>Route C — Full reconfigure</h4>
+              <div class="meta">2 baths · load-bearing beam work · slab trenching<br>
+              <b>$168k–$205k</b> · <span class="up">+$260k est. value</span> · ⚠ over budget</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gal-count"><b id="galNow">1</b> / 6</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ ACT 4 · MISSION word-by-word (5 viewports pinned) ═══════ -->
+<section class="act" id="act-mission" style="height:500vh">
+  <div class="pin">
+    <div class="eyebrow" data-fade>Why here, why now</div>
+    <div class="mission" data-mission>
+      We turn a floor plan and one sentence into
+      <em>three routes you can actually build</em>
+      — starting with the county where a bad renovation decision costs the most.
+    </div>
+    <div class="stats">
+      <div class="stat glass" data-fade><div class="big">$1.4M</div><div class="lb">Median Bay Area home value — every decision is high-stakes</div></div>
+      <div class="stat glass" data-fade><div class="big">2–3×</div><div class="lb">Spread between contractor bids for the same job</div></div>
+      <div class="stat glass" data-fade><div class="big">1</div><div class="lb">County at launch. Nail it, then expand across the Bay</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ ACT 5 · CLOSING PEEKABOO (3 viewports pinned) ═══════ -->
+<section class="act" id="act-close" style="height:300vh">
+  <div class="pin">
+    <div class="sr-only" style="position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden">
+      Built to demo end to end
+    </div>
+    <div class="line hero-type" aria-hidden="true">
+      <span class="w"><i>Built</i></span>
+      <span class="w"><i>to</i></span>
+      <span class="w hollow"><i>demo</i></span>
+    </div>
+    <div class="line hero-type" aria-hidden="true">
+      <span class="w hot"><i>end</i></span>
+      <span class="peek" data-peek>
+        <span class="peekInner">
+          <svg viewBox="0 0 220 130" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+            <defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#FFC98A"/><stop offset="1" stop-color="#FF6A00"/>
+            </linearGradient></defs>
+            <rect width="220" height="130" fill="url(#g2)"/>
+            <g stroke="#fff" stroke-width="3.4" fill="none" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M48 98 L48 46 L112 46 L112 98 Z"/>
+              <path d="M112 98 L112 62 L176 62 L176 98 Z" opacity=".72"/>
+              <path d="M48 72 L112 72" opacity=".72"/>
+              <path d="M34 98 L190 98" opacity=".85"/>
+            </g>
+          </svg>
+        </span>
+      </span>
+      <span class="w hot"><i>to</i></span>
+      <span class="w hot"><i>end</i></span>
+    </div>
+    <p class="hero-sub" data-fade>
+      Address input, floor-plan upload, natural-language prompt, optional budget.
+      A Zillow/Redfin agent behind it, a feasibility engine on top, and a graceful
+      no-API-key fallback so <strong>it always demos.</strong>
+    </p>
+    <a class="cta" data-fade href="mailto:wali@viqas.com">Get in touch</a>
+    <div class="contact" data-fade>Wali Viqas · <a href="mailto:wali@viqas.com">wali@viqas.com</a></div>
+  </div>
+</section>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var clamp = function(v,a,b){ return v<a?a:(v>b?b:v); };
+  var seg   = function(p,a,b){ return clamp((p-a)/(b-a),0,1); };
+  var ease  = function(t){ return 1-Math.pow(1-t,3); };
+  var mix   = function(a,b,t){ return a+(b-a)*t; };
+
+
+  /* --- build the title wordmark --- */
+  var markHost = document.getElementById('introMark');
+  if(markHost){
+    'RENOVATE'.split('').forEach(function(ch,i){
+      var wrap = document.createElement('span');
+      wrap.className = 'lw' + (i < 4 ? ' hot' : '');   // RENO orange, VATE ink
+      var b = document.createElement('b');
+      b.textContent = ch;
+      wrap.appendChild(b);
+      markHost.appendChild(wrap);
+    });
+  }
+
+  /* --- desync the curtain layers so left and right never mirror each other --- */
+  [].slice.call(document.querySelectorAll('.curtain span')).forEach(function(s,i){
+    s.style.animationDelay = (-i*3.4) + 's, ' + (-i*2.1) + 's';
+  });
+
+  /* --- split the mission copy into per-word spans --- */
+  var mission = document.querySelector('[data-mission]');
+  if(mission){
+    var frag = document.createDocumentFragment();
+    [].slice.call(mission.childNodes).forEach(function(node){
+      var accent = node.nodeType === 1 && node.tagName === 'EM';
+      var text = (node.textContent || '').trim();
+      if(!text) return;
+      text.split(/\s+/).forEach(function(word){
+        var s = document.createElement('span');
+        s.textContent = word;
+        if(accent) s.className = 'acc';
+        frag.appendChild(s);
+      });
+    });
+    mission.textContent = '';
+    mission.appendChild(frag);
+  }
+
+  /* --- collect acts and their animated parts --- */
+  var acts = [].slice.call(document.querySelectorAll('.act')).map(function(el){
+    return {
+      el: el,
+      words:   [].slice.call(el.querySelectorAll('.w > i')),
+      peeks:   [].slice.call(el.querySelectorAll('[data-peek]')),
+      fades:   [].slice.call(el.querySelectorAll('[data-fade]')),
+      slides:  [].slice.call(el.querySelectorAll('[data-slide]')),
+      mwords:  [].slice.call(el.querySelectorAll('[data-mission] span')),
+      title:   el.querySelector('[data-title]'),
+      letters: [].slice.call(el.querySelectorAll('.introMark .lw > b')),
+      grid:    el.querySelector('[data-grid]'),
+      rings:   [].slice.call(el.querySelectorAll('[data-ring]')),
+      scan:    el.querySelector('[data-scan]'),
+      sub:     el.querySelector('[data-sub]')
+    };
+  });
+
+  var rail   = document.getElementById('rail');
+  var galNow = document.getElementById('galNow');
+  var halo   = document.querySelector('[data-halo]');
+  var root   = document.documentElement;
+  var ticking = false;
+
+  /* --- pointer parallax: the light field leans toward the cursor --- */
+  var mx = 0, my = 0, tmx = 0, tmy = 0;
+  if(!reduce){
+    window.addEventListener('mousemove', function(e){
+      tmx = (e.clientX / window.innerWidth  - 0.5) * 2;
+      tmy = (e.clientY / window.innerHeight - 0.5) * 2;
+      onScroll();
+    }, {passive:true});
+  }
+
+  function render(){
+    ticking = false;
+    var vh = window.innerHeight, vw = window.innerWidth;
+
+    // ease the pointer toward its target so the light drifts rather than snaps
+    mx += (tmx - mx) * 0.08;
+    my += (tmy - my) * 0.08;
+    root.style.setProperty('--mx', mx.toFixed(3));
+    root.style.setProperty('--my', my.toFixed(3));
+
+    var docH = document.documentElement.scrollHeight - vh;
+    var gp   = docH>0 ? window.pageYOffset/docH : 0;      // global 0..1
+    rail.style.width = (gp*100) + '%';
+
+    // the halo travels down the page so glass always has colour behind it
+    halo.style.setProperty('--hx', mix(74, 30, gp) + '%');
+    halo.style.setProperty('--hy', mix(34, 66, gp) + '%');
+    halo.style.setProperty('--hy2', mix(86, 22, gp) + '%');
+
+    if(reduce) return;
+
+    acts.forEach(function(a){
+      var top   = a.el.offsetTop;
+      var span  = a.el.offsetHeight - vh;
+      var p     = span>0 ? clamp((window.pageYOffset - top)/span, 0, 1) : 0;
+
+      // title card: assembles, gets scanned, then pulls away into the hero
+      if(a.title){
+        var ln = a.letters.length;
+        a.letters.forEach(function(b,i){
+          var a0 = (i/ln)*0.22;
+          var t  = ease(seg(p, a0, a0+0.18));
+          b.style.transform = 'translateY(' + ((1-t)*115) + '%) rotateX(' + ((1-t)*-62) + 'deg)';
+          b.style.filter    = 'blur(' + ((1-t)*14).toFixed(1) + 'px)';
+          b.style.opacity   = t;
+        });
+        var gt = ease(seg(p,0.02,0.40));
+        a.grid.style.opacity   = gt*0.45;
+        a.grid.style.transform = 'scale(' + mix(1.5,1,gt) + ') rotate(' + mix(1.5,0,gt) + 'deg)';
+        a.rings.forEach(function(r,i){
+          var rt = seg(p, 0.08 + i*0.09, 0.62 + i*0.09);
+          r.style.transform = 'scale(' + mix(0.2,3.1,ease(rt)) + ')';
+          r.style.opacity   = Math.min(seg(rt,0,0.18), 1-seg(rt,0.55,1));
+        });
+        var st = seg(p,0.30,0.74);
+        a.scan.style.transform = 'translateX(' + mix(-260,760,st) + '%)';
+        a.scan.style.opacity   = Math.min(seg(st,0,0.15), 1-seg(st,0.85,1)) * 0.75;
+        var bt = ease(seg(p,0.38,0.60));
+        a.sub.style.opacity      = bt*0.9;
+        a.sub.style.letterSpacing= mix(0.62,0.42,bt) + 'em';
+        // hand off to the hero
+        var ex = ease(seg(p,0.76,1));
+        a.title.style.transform = 'scale(' + mix(1,1.09,ex) + ')';
+        a.title.style.opacity   = 1-ex;
+      }
+
+      // headline words: mask-reveal, staggered across the first third of the act
+      if(a.words.length){
+        var n = a.words.length;
+        a.words.forEach(function(w,i){
+          var a0 = (i/n)*0.30;
+          var t  = ease(seg(p, a0, a0+0.16));
+          w.style.transform = 'translateY(' + ((1-t)*110) + '%)';
+        });
+      }
+
+      // peekaboo: opens from zero width, shouldering the words apart, and
+      // lights up as it opens — Netflix grows theirs from width:0 the same way
+      a.peeks.forEach(function(pk){
+        var t  = ease(seg(p, 0.10, 0.62));
+        var W  = clamp(vw*0.13, 90, 240);
+        var H  = clamp(vw*0.085, 60, 150);
+        pk.style.width  = (W*t) + 'px';
+        pk.style.height = (H*mix(0.55,1,t)) + 'px';
+        pk.style.marginLeft = pk.style.marginRight = (t*0.09) + 'em';
+        pk.style.boxShadow =
+          '0 -20px 70px -28px rgba(255,106,0,' + (t*0.95).toFixed(2) + '), ' +
+          '0 24px 54px -22px rgba(176,46,0,' + (t*0.55).toFixed(2) + '), ' +
+          'inset 0 1px 0 rgba(255,255,255,.8)';
+        var inner = pk.firstElementChild;
+        if(inner){
+          inner.style.transform =
+            'translateX(' + ((p-0.5)*-22 + mx*4) + '%) scale(' + mix(1.25,1,t) + ')';
+        }
+      });
+
+      // fade-ups, staggered after the headline lands
+      if(a.fades.length){
+        var fn = a.fades.length;
+        a.fades.forEach(function(f,i){
+          var a0 = 0.30 + (i/fn)*0.28;
+          var t  = ease(seg(p, a0, a0+0.20));
+          f.style.opacity = t;
+          f.style.transform = 'translateY(' + ((1-t)*26) + 'px)';
+        });
+      }
+
+      // gallery: each card scales up toward the viewer and dissolves into the
+      // next. Neighbours overlap deliberately — drawing only the current slide
+      // leaves a blank frame at every boundary.
+      if(a.slides.length){
+        var sn  = a.slides.length;
+        var raw = p*sn;
+        var idx = clamp(Math.round(raw-0.5), 0, sn-1);
+        a.slides.forEach(function(s,i){
+          var local = raw - i;                              // 0..1 is its own turn
+          // short deliberate overlap: long enough that no frame is ever blank,
+          // short enough that you never read two cards at once
+          var o = Math.min(seg(local,-0.14,0.10), 1-seg(local,0.84,1.03));
+          s.style.opacity = o;
+          s.style.zIndex  = Math.round(o*100);
+          if(o <= 0) return;                                // nothing to place
+          var t  = clamp((local+0.30)/1.42, 0, 1);          // 0 far → 1 past you
+          var z  = s.firstElementChild;
+          z.style.transform   = 'scale(' + mix(0.80,1.14,t) + ') translateZ(0)';
+          z.style.borderRadius= mix(40,8,t) + 'px';
+          z.style.filter      = 'blur(' + ((1-o)*5).toFixed(2) + 'px)';
+        });
+        if(galNow) galNow.textContent = idx+1;
+        // retune the page's accent to the slide in front
+        var acc = a.slides[idx].getAttribute('data-accent');
+        if(acc) root.style.setProperty('--accent', acc);
+      }
+
+      // mission: light words one at a time
+      if(a.mwords.length){
+        var mn = a.mwords.length;
+        a.mwords.forEach(function(s,i){
+          var thresh = 0.10 + (i/mn)*0.55;
+          s.classList.toggle('lit', p >= thresh);
+        });
+      }
+    });
+
+    // keep easing the pointer until it settles
+    if(Math.abs(tmx-mx) > 0.002 || Math.abs(tmy-my) > 0.002) onScroll();
+  }
+
+  function onScroll(){
+    if(!ticking){ ticking = true; requestAnimationFrame(render); }
+  }
+
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+  window.addEventListener('load', render);
+  render();
+
+  /* --- keyboard: jump act to act --- */
+  document.addEventListener('keydown', function(e){
+    if(['ArrowDown','PageDown',' ','ArrowUp','PageUp'].indexOf(e.key) === -1) return;
+    var fwd = (e.key !== 'ArrowUp' && e.key !== 'PageUp');
+    var y = window.pageYOffset;
+    var tops = acts.map(function(a){ return a.el.offsetTop; });
+    var target = null;
+    if(fwd){
+      for(var i=0;i<tops.length;i++){ if(tops[i] > y+8){ target = tops[i]; break; } }
+    } else {
+      for(var j=tops.length-1;j>=0;j--){ if(tops[j] < y-8){ target = tops[j]; break; } }
+    }
+    if(target !== null){
+      e.preventDefault();
+      window.scrollTo({top:target, behavior:'smooth'});
+    }
+  });
+})();
+</script>
+</body>
+</html>
