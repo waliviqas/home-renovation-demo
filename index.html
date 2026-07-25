@@ -456,6 +456,9 @@
   .baArrow{flex:0 0 auto;font-size:22px;color:var(--o-500);font-weight:700}
   .baNote{margin-top:16px;font-size:13px;font-style:italic;color:var(--ink-soft)}
 
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;
+    clip-path:inset(50%);white-space:nowrap}
+
   /* ══════════ mission word-by-word ══════════ */
   .mission{
     font-family:'Outfit',sans-serif;font-weight:800;
@@ -564,7 +567,7 @@
 <!-- ═══════ ACT 1 · HERO PEEKABOO (3 viewports pinned) ═══════ -->
 <section class="act" id="act-hero" style="height:300vh">
   <div class="pin">
-    <div class="sr-only" style="position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden">
+    <div class="sr-only">
       An architect in your pocket
     </div>
     <div class="line hero-type" aria-hidden="true">
@@ -637,7 +640,7 @@
 </section>
 
 <!-- ═══════ ACT 3 · GALLERY (9 viewports pinned, 6 slides that come at you) ═══════ -->
-<section class="act" id="act-gallery" style="height:1050vh">
+<section class="act" id="act-gallery" style="height:900vh">
   <div class="pin" style="padding:0">
     <div class="gal-frame" id="gal">
 
@@ -726,29 +729,6 @@
         </div>
       </div>
 
-      <div class="slide" data-slide data-accent="255,96,10">
-        <div class="zoom">
-          <div class="txt">
-            <h2>Three routes.<br><em>Real numbers.</em></h2>
-            <p>Not a quote, a <strong>95% confidence interval</strong>. Every route
-            shows the realistic cost band and what it's worth when it's done:
-            pre-renovation valuation against projected post-renovation valuation,
-            straight from comps.</p>
-          </div>
-          <div class="vis">
-            <div class="route"><h4>Route A: Split the suite</h4>
-              <div class="meta">2 new baths · non-bearing partition removal<br>
-              <b>$118k–$142k</b> <i>95% CI</i> · <span class="up">+$210k est. value</span> · code ✓</div></div>
-            <div class="route"><h4>Route B: Bath + junior suite</h4>
-              <div class="meta">1 new bath · master reconfigured, wall retained<br>
-              <b>$86k–$104k</b> <i>95% CI</i> · <span class="up">+$155k est. value</span> · over-the-counter</div></div>
-            <div class="route"><h4>Route C: Full reconfigure</h4>
-              <div class="meta">2 baths · load-bearing beam work · slab trenching<br>
-              <b>$168k–$205k</b> <i>95% CI</i> · <span class="up">+$260k est. value</span> · ⚠ over budget</div></div>
-          </div>
-        </div>
-      </div>
-
       <div class="slide" data-slide data-accent="255,140,40">
         <div class="zoom">
           <div class="txt">
@@ -797,7 +777,7 @@
         </div>
       </div>
 
-      <div class="gal-count"><b id="galNow">1</b> / 7</div>
+      <div class="gal-count"><b id="galNow">1</b> / 6</div>
     </div>
   </div>
 </section>
@@ -808,7 +788,7 @@
     <div class="eyebrow" data-fade>Why here, why now</div>
     <div class="mission" data-mission>
       We turn a floor plan and one sentence into
-      <em>three routes you can actually build.</em>
+      <em>an optimized route you can actually build.</em>
       We start with the county where a bad renovation decision costs the most.
     </div>
     <div class="stats">
@@ -822,7 +802,7 @@
 <!-- ═══════ ACT 5 · CLOSING PEEKABOO (3 viewports pinned) ═══════ -->
 <section class="act" id="act-close" style="height:300vh">
   <div class="pin">
-    <div class="sr-only" style="position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden">
+    <div class="sr-only">
       Built to demo end to end
     </div>
     <div class="line hero-type" aria-hidden="true">
@@ -893,6 +873,15 @@
   /* --- split the mission copy into per-word spans --- */
   var mission = document.querySelector('[data-mission]');
   if(mission){
+    // The visible line becomes one span per word with no whitespace between
+    // them (flex gap does the spacing), so copy-paste and screen readers would
+    // get "Weturnafloorplan". Keep a readable copy alongside it.
+    var readable = document.createElement('div');
+    readable.className = 'sr-only';
+    readable.textContent = mission.textContent.replace(/\s+/g,' ').trim();
+    mission.parentNode.insertBefore(readable, mission);
+    mission.setAttribute('aria-hidden','true');
+
     var frag = document.createDocumentFragment();
     [].slice.call(mission.childNodes).forEach(function(node){
       var accent = node.nodeType === 1 && node.tagName === 'EM';
