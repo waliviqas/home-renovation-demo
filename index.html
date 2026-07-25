@@ -531,8 +531,22 @@
   .stat .lb{margin-top:10px;font-size:12px;font-weight:500;text-transform:uppercase;
     letter-spacing:.1em;color:var(--ink-mid);max-width:230px;line-height:1.55;position:relative;z-index:1}
 
+  /* ══════════ closing wordmark ══════════ */
+  .closeMark{
+    font-family:'Outfit',sans-serif;font-weight:800;line-height:1;
+    font-size:clamp(44px,9.5vw,158px);letter-spacing:-.045em;
+    background:linear-gradient(150deg,var(--o-300),var(--o-500) 42%,var(--o-900));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    opacity:0;
+  }
+  .closeMark span{color:var(--ink);-webkit-text-fill-color:var(--ink)}
+  .closeSub{
+    margin-top:18px;font-size:clamp(11px,1.25vw,16px);font-weight:600;
+    letter-spacing:.34em;text-transform:uppercase;color:var(--o-700);opacity:0;
+  }
+
   /* ══════════ team ══════════ */
-  .team{margin-top:34px;opacity:0}
+  .team{margin-top:44px;opacity:0}
   .teamLab{font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
     color:var(--ink-soft);margin-bottom:12px}
   .teamRow{display:flex;flex-wrap:wrap;gap:10px}
@@ -940,51 +954,17 @@
   </div>
 </section>
 
-<!-- ═══════ ACT 5 · CLOSING PEEKABOO (3 viewports pinned) ═══════ -->
+<!-- ═══════ ACT 5 · CLOSING (3 viewports pinned) ═══════ -->
 <section class="act" id="act-close" style="height:300vh">
   <div class="pin">
-    <div class="sr-only">
-      Built to demo end to end
-    </div>
-    <div class="line hero-type" aria-hidden="true">
-      <span class="w"><i>Built</i></span>
-      <span class="w"><i>to</i></span>
-      <span class="w hollow"><i>demo</i></span>
-    </div>
-    <div class="line hero-type" aria-hidden="true">
-      <span class="w hot"><i>end</i></span>
-      <span class="peek" data-peek>
-        <span class="peekInner">
-          <svg viewBox="0 0 220 130" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
-            <defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#FFC98A"/><stop offset="1" stop-color="#FF6A00"/>
-            </linearGradient></defs>
-            <rect width="220" height="130" fill="url(#g2)"/>
-            <g stroke="#fff" stroke-width="3.4" fill="none" stroke-linejoin="round" stroke-linecap="round">
-              <path d="M48 98 L48 46 L112 46 L112 98 Z"/>
-              <path d="M112 98 L112 62 L176 62 L176 98 Z" opacity=".72"/>
-              <path d="M48 72 L112 72" opacity=".72"/>
-              <path d="M34 98 L190 98" opacity=".85"/>
-            </g>
-          </svg>
-        </span>
-      </span>
-      <span class="w hot"><i>to</i></span>
-      <span class="w hot"><i>end</i></span>
-    </div>
-    <p class="hero-sub" data-fade>
-      Address input, floor-plan upload, natural-language prompt, optional budget.
-      A Zillow/Redfin agent behind it, a feasibility engine on top, and a graceful
-      no-API-key fallback so <strong>it always demos.</strong>
-    </p>
-    <a class="cta" data-fade href="mailto:wali@viqas.com">Get in touch</a>
+    <div class="closeMark" data-fade>Reno<span>vate</span></div>
+    <div class="closeSub" data-fade>An architect in your pocket</div>
     <div class="team" data-fade>
       <div class="teamLab">Team</div>
       <div class="teamRow">
         <span>Rameez</span><span>Soham</span><span>Prakhar</span><span>Wali</span>
       </div>
     </div>
-    <div class="contact" data-fade><a href="mailto:wali@viqas.com">wali@viqas.com</a></div>
   </div>
 </section>
 
