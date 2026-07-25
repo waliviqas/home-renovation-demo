@@ -348,15 +348,15 @@
      the current slide leaves a blank frame at every boundary. */
   .gal-frame{position:relative;height:100vh}
   .slide{position:absolute;inset:0;display:grid;place-items:center;
-         opacity:0;pointer-events:none;will-change:opacity}
+         opacity:0;pointer-events:none;visibility:hidden}
   .zoom{
     position:relative;width:86vw;max-width:1380px;height:74vh;
     display:flex;align-items:center;gap:4vw;padding:5vh 4.5vw;
     border-radius:34px;overflow:hidden;transform-origin:50% 52%;
     background:linear-gradient(150deg,rgba(255,255,255,.88) 0%,rgba(255,236,216,.72) 100%);
     border:1px solid var(--glass-line);
-    box-shadow:0 0 0 1px rgba(255,122,36,.16), 0 60px 120px -50px rgba(var(--accent),.75), var(--inset-hi);
-    will-change:transform;
+    box-shadow:0 0 0 1px rgba(255,122,36,.16), 0 30px 60px -30px rgba(var(--accent),.6), var(--inset-hi);
+    contain:layout paint;
   }
   .zoom::after{
     content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
@@ -414,7 +414,6 @@
     letter-spacing:-.05em;
     background:linear-gradient(165deg,var(--o-300),var(--o-500) 45%,var(--o-900));
     -webkit-background-clip:text;background-clip:text;color:transparent;
-    filter:drop-shadow(0 16px 34px rgba(240,78,0,.28));
   }
   .steplist{margin-top:22px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
   .steplist div{
@@ -570,7 +569,7 @@
     .w > i{transform:none !important}
     .hero-sub,.eyebrow,.card,.cta,.stat,.contact{opacity:1 !important;transform:none !important}
     .mission span{opacity:1 !important}
-    .slide{position:relative;opacity:1 !important;height:auto;padding:8vh 0}
+    .slide{position:relative;opacity:1 !important;visibility:visible !important;height:auto;padding:8vh 0}
     .zoom{transform:none !important;height:auto;width:88vw}
     .gal-frame{height:auto}
     .act{height:auto !important}
@@ -707,7 +706,7 @@
 </section>
 
 <!-- ═══════ ACT 3 · GALLERY (9 viewports pinned, 6 slides that come at you) ═══════ -->
-<section class="act" id="act-gallery" style="height:900vh">
+<section class="act" id="act-gallery" style="height:750vh">
   <div class="pin" style="padding:0">
     <div class="gal-frame" id="gal">
 
@@ -735,30 +734,16 @@
       <div class="slide" data-slide data-accent="255,150,30">
         <div class="zoom">
           <div class="txt">
-            <h2>Step one.<br><em>Search.</em></h2>
-            <p>A web-search agent hits <strong>Zillow and Redfin only</strong> with your address.
-            Two structured sources, deliberately: breadth would poison the house profile
-            every later stage depends on.</p>
+            <h2>Step one.<br><em>Search + Profile.</em></h2>
+            <p>A web-search agent hits <strong>Zillow and Redfin only</strong> with your
+            address, then infers the actual house from what it finds: <strong>ranch or
+            two-story, slab or raised foundation, load-bearing walls, square footage,
+            year built</strong>. Two structured sources, deliberately: breadth would
+            poison the profile every later stage depends on.</p>
           </div>
           <div class="vis"><div class="stepbig">1</div>
             <div class="steplist">
-              <div class="on">Search</div><div>Profile</div><div>Feasibility</div><div>Routes</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="slide" data-slide data-accent="255,88,20">
-        <div class="zoom">
-          <div class="txt">
-            <h2>Step two.<br><em>Profile.</em></h2>
-            <p>It infers your actual house: <strong>ranch or two-story, slab or raised
-            foundation, load-bearing walls, square footage, year built</strong>. These are
-            the facts that decide what can move.</p>
-          </div>
-          <div class="vis"><div class="stepbig">2</div>
-            <div class="steplist">
-              <div>Search</div><div class="on">Profile</div><div>Feasibility</div><div>Routes</div>
+              <div class="on">Search + Profile</div><div>Feasibility</div><div>Routes</div>
             </div>
           </div>
         </div>
@@ -767,14 +752,14 @@
       <div class="slide" data-slide data-accent="255,178,60">
         <div class="zoom">
           <div class="txt">
-            <h2>Step three.<br><em>Feasibility.</em></h2>
+            <h2>Step two.<br><em>Feasibility.</em></h2>
             <p>A rules engine crosses your prompt against the house profile, your budget,
             and <strong>county permit knowledge</strong>. This is the part that's hard to
             copy, and it's per-jurisdiction.</p>
           </div>
-          <div class="vis"><div class="stepbig">3</div>
+          <div class="vis"><div class="stepbig">2</div>
             <div class="steplist">
-              <div>Search</div><div>Profile</div><div class="on">Feasibility</div><div>Routes</div>
+              <div>Search + Profile</div><div class="on">Feasibility</div><div>Routes</div>
             </div>
           </div>
         </div>
@@ -783,14 +768,14 @@
       <div class="slide" data-slide data-accent="255,120,0">
         <div class="zoom">
           <div class="txt">
-            <h2>Step four.<br><em>Routes.</em></h2>
+            <h2>Step three.<br><em>Routes.</em></h2>
             <p>Up to <strong>three renovation routes</strong>. Each one carries a
             realistic cost as a <strong>95% confidence interval</strong>, what the work
             is worth when it's done, and a 3D view of the house after it's built.</p>
           </div>
-          <div class="vis"><div class="stepbig">4</div>
+          <div class="vis"><div class="stepbig">3</div>
             <div class="steplist">
-              <div>Search</div><div>Profile</div><div>Feasibility</div><div class="on">Routes</div>
+              <div>Search + Profile</div><div>Feasibility</div><div class="on">Routes</div>
             </div>
           </div>
         </div>
@@ -844,7 +829,7 @@
         </div>
       </div>
 
-      <div class="gal-count"><b id="galNow">1</b> / 6</div>
+      <div class="gal-count"><b id="galNow">1</b> / 5</div>
     </div>
   </div>
 </section>
@@ -1186,13 +1171,25 @@
           // short deliberate overlap: long enough that no frame is ever blank,
           // short enough that you never read two cards at once
           var o = Math.min(seg(local,-0.14,0.10), 1-seg(local,0.84,1.03));
+          var live = o > 0;
+          var z = s.firstElementChild;
+          // An offscreen card left at opacity 0 still costs a composited layer
+          // and gets re-rastered. Take it out of the tree instead, and only
+          // promote the one or two that are actually on screen.
+          if(s.__live !== live){
+            s.style.visibility = live ? 'visible' : 'hidden';
+            s.style.willChange = live ? 'opacity' : 'auto';
+            z.style.willChange = live ? 'transform' : 'auto';
+            s.__live = live;
+          }
           s.style.opacity = o;
           s.style.zIndex  = Math.round(o*100);
-          if(o <= 0) return;                                // nothing to place
+          if(!live) return;
           var t  = clamp((local+0.30)/1.42, 0, 1);          // 0 far → 1 past you
-          var z  = s.firstElementChild;
-          z.style.transform   = 'scale(' + mix(0.80,1.14,t) + ') translateZ(0)';
-          z.style.borderRadius= mix(40,8,t) + 'px';
+          // A narrower scale range means fewer distinct raster scales for a
+          // layer this large, and it still reads as depth.
+          z.style.transform   = 'scale(' + mix(0.88,1.06,t) + ') translateZ(0)';
+          z.style.borderRadius= mix(34,10,t) + 'px';
         });
         if(galNow) galNow.textContent = idx+1;
         // retune the page's accent to the slide in front
