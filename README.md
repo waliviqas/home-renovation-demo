@@ -1,4 +1,4 @@
-# Architect in Your Pocket — pitch deck
+# Renovate, the first all-in-one confidence layer for aspiring property renovators.
 
 A pinned-scroll deck for the AI-native home renovation MVP. Six acts across
 ~27 viewports, in a white-and-orange liquid-glass treatment.
